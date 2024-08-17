@@ -1,0 +1,271 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.dashboard {
+    display: flex;
+}
+
+.sidebar {
+    width: 200px;
+    height: 120vh;
+    background-color: #111313;
+    color: white;
+    padding: 30px;
+}
+
+.navdiv {
+    background-color: #324d4e;
+    padding-top: 15px;
+    padding-bottom: 1px;
+}
+
+.navdiv h2 {
+    margin-top: 0;
+    margin-left: 40px;
+    color: white;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding-left: 5px;
+}
+
+.sidebar ul li {
+    margin-bottom: 20px;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.card-content {
+    display: flex;
+    height: 200px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding-top: 10px;
+    padding-left: 0px;
+    gap: 30px;
+}
+
+.card {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 50px;
+    padding-right: 50px;
+    /* Tăng padding để widget cao hơn */
+    border-radius: 10px;
+    text-align: center;
+    width: 220px;
+    /* Có thể tăng width nếu cần */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card h3 {
+    font-size: 30px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.card.blue {
+    background-color: #2cafff;
+    color: black;
+}
+
+.card.grey {
+    background-color: #dcdcdc;
+    color: black;
+}
+
+.card.orange {
+    background-color: #ffa836;
+    color: black;
+}
+
+.card p {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.bottom-content {
+    display: flex;
+    gap: 20px;
+    /* Khoảng cách giữa hai phần */
+    padding: 30px;
+}
+
+/* Định dạng cho mỗi phần */
+.left-bg {
+    flex: 1;
+    /* Chiếm không gian đều nhau */
+    height: 500px;
+    /* Chiều cao của mỗi phần */
+    border-radius: 5px;
+    /* Bo góc */
+    width: 10px;
+}
+
+
+.right-bg {
+    flex: 1;
+    /* Chiếm không gian đều nhau */
+    height: 500px;
+    /* Chiều cao của mỗi phần */
+    border-radius: 5px;
+    /* Bo góc */
+    width: 10px;
+}
+
+/* Màu nền cho từng phần */
+.left-bg {
+    background-color: #ffffff;
+}
+
+.right-bg {
+    background-color: #ffffff;
+}
+
+.main-content {
+    height: 100vh;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 50px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    gap: 30px;
+}
+
+
+/* .bottom-section div {
+    border: 2px rgb(91, 80, 80) solid;
+} */
+
+.tempChartBox,
+.dryChartBox,
+.lightChartBox
+ {
+    width: 100%;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    /* Thêm đường viền dưới */
+}
+
+
+.tempChartBox canvas,
+.dryChartBox canvas,
+.lightChartBox canvas {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+/* Thêm khoảng trống giữa các đường viền */
+.tempChartBox,
+.dryChartBox,
+.lightChartBox {
+margin-bottom: 20px;
+    /* Điều chỉnh khoảng cách giữa các biểu đồ */
+}
+
+.deviceControl {
+    height: 497px;
+    width: 525px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+}
+
+
+
+
+
+
+.deviceControl {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+.device {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.device-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #2196F3;
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}
+
+.device span {
+    flex: 1;
+    font-size: 18px;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 0;
+}
