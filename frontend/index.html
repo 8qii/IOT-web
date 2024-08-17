@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IOT Dashboard</title>
+    <link rel="stylesheet" href="css\styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js\indexScripts.js"></script>
+</head>
+
+<body>
+    <nav>
+        <div class="navdiv">
+            <h2>IOT Dashboard</h2>
+        </div>
+    </nav>
+    <div class="dashboard">
+        <div class="sidebar">
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="thongKe.html">Thống kê môi trường</a></li>
+                <li><a href="lichSu.html">Lịch sử thiết bị</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="card-content">
+                <div class="card blue">
+                    <h3>Nhiệt độ</h3>
+                    <p id="temperature"></p> <!-- Thêm id="temperature" -->
+                </div>
+                <div class="card grey">
+                    <h3>Độ ẩm</h3>
+                    <p id="humidity"></p> <!-- Thêm id="humidity" -->
+                </div>
+                <div class="card orange">
+                    <h3>Ánh sáng</h3>
+                    <p id="light"></p> <!-- Thêm id="light" -->
+                </div>
+            </div>
+            <div class="bottom-content">
+                <div class="bottom-section left-bg">
+                    <div><h2>Thống kê thời gian thực</h2></div>
+                    <div class="tempChartBox">
+                        <canvas id="lineChart" width="400" height="140"></canvas>
+                    </div>
+                    <div class="dryChartBox"> <!-- Div mới cho biểu đồ độ ẩm -->
+                        <canvas id="humidityChart" width="400" height="140"></canvas>
+                    </div>
+                    <div class="lightChartBox">
+                        <canvas id="lightChart" width="400" height="140"></canvas>
+                    </div>
+                </div>
+                <div class="bottom-section right-bg">
+                    <div>
+                        <h2>Điều khiển thiết bị thông minh</h2>
+                    </div>
+                    <div class="deviceControl">
+                        <div class="device">
+                            <img src="img/lightIcon.png" alt="light" class="device-icon">
+                            <span>Đèn</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <hr class="divider">
+                        <div class="device">
+                            <img src="img/fanIcon.png" alt="fan" class="device-icon">
+                            <span>Quạt</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <hr class="divider">
+                        <div class="device">
+                            <img src="img/condIcon.png" alt="cond" class="device-icon">
+                            <span>Điều hòa</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+
+</html>
