@@ -6,14 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IOT Dashboard</title>
     <link rel="stylesheet" href="css\styles.css">
+    <link rel="stylesheet" href="css\all.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js\indexScripts.js"></script>
+    <script src="js\all.js"></script>
 </head>
 
 <body>
     <nav>
         <div class="navdiv">
             <h2>IOT Dashboard</h2>
+            <!-- Phần bên phải của navbar -->
+            <div class="navbar-right">
+                <div class="notification">
+                    <img src="img/notificationIcon.png" alt="Thông báo" class="notification-icon"
+                        onclick="toggleNotifications()">
+                    <span class="badge">99</span>
+                    <div id="notificationDropdown" class="notification-dropdown">
+                        <p>Thông báo 1</p>
+                        <p>Thông báo 2</p>
+                        <p>Thông báo 3</p>
+                        <!-- Thêm các thông báo khác tại đây -->
+                    </div>
+                </div>
+                <div class="user-info" onclick="goToProfile()">
+                    <img src="img/profileIcon.png" alt="Avatar" class="user-avatar">
+                    <span>Hoàng Anh Quân</span>
+                </div>
+            </div>
         </div>
     </nav>
     <div class="dashboard">

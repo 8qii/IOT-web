@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
+from datetime import datetime
+import pytz
 
 app = Flask(__name__)
 CORS(app)  # Kích hoạt CORS
@@ -101,21 +103,29 @@ def get_device_status():
 # API để lưu trạng thái thiết bị vào cơ sở dữ liệu
 
 
+def get_current_time_in_vietnam():
+    vietnam_tz = pytz.timezone('Asia/Ho_Chi_Minh')
+    return datetime.now(vietnam_tz).strftime('%Y-%m-%d %H:%M:%S')
+
+
 @app.route('/api/update-status', methods=['POST'])
 def update_status():
     data = request.json
     device_name = data['device_name']
     status = data['status']
+    # Lấy giờ hiện tại theo múi giờ Việt Nam
+    timestamp = get_current_time_in_vietnam()
 
     conn = sqlite3.connect('iot.db')
     cursor = conn.cursor()
 
-    cursor.execute("INSERT INTO devices (device_name, status) VALUES (?, ?)",
-                   (device_name, status))
+    cursor.execute("INSERT INTO devices (device_name, status, timestamp) VALUES (?, ?, ?)",
+                   (device_name, status, timestamp))
     conn.commit()
     conn.close()
 
     return jsonify({'message': 'Status updated successfully'})
+
 
 
 if __name__ == '__main__':

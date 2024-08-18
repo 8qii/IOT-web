@@ -148,7 +148,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Gửi trạng thái mới lên API khi người dùng thay đổi trạng thái của nút
     document.querySelectorAll('.switch input[type="checkbox"]').forEach(switchElement => {
-        switchElement.addEventListener('change', function () {
+        switchElement.addEventListener('change', function (event) {
+            // Ngăn chặn hành vi mặc định để tránh tải lại trang
+            event.preventDefault();
+            event.stopPropagation();  // Ngăn chặn sự kiện lan rộng
+
             const deviceElement = this.closest('.device');
             const deviceName = deviceElement.querySelector('.device-icon').alt.toLowerCase();
             const status = this.checked ? 'on' : 'off';
