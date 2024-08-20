@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css\all.css">
     <script src="js/lichSuScripts.js"></script>
     <script src="js\all.js"></script>
+    <script src="https://cdn.socket.io/4.5.2/socket.io.min.js"></script>
+
 </head>
 
 <body>
@@ -20,12 +22,9 @@
                 <div class="notification">
                     <img src="img/notificationIcon.png" alt="Thông báo" class="notification-icon"
                         onclick="toggleNotifications()">
-                    <span class="badge">99</span>
+                    <!-- <span class="badge">99</span> -->
                     <div id="notificationDropdown" class="notification-dropdown">
-                        <p>Thông báo 1</p>
-                        <p>Thông báo 2</p>
-                        <p>Thông báo 3</p>
-                        <!-- Thêm các thông báo khác tại đây -->
+                        <!-- Các thông báo sẽ được thêm vào đây qua JavaScript -->
                     </div>
                 </div>
                 <div class="user-info" onclick="goToProfile()">
@@ -35,6 +34,19 @@
             </div>
         </div>
     </nav>
+    
+    <div id="overlay" class="overlay"></div>
+    <!-- Cửa sổ chi tiết thông báo -->
+    <div id="notificationDetail" class="notification-detail">
+        <div class="detail-header">
+            <span class="detail-title">Notification Detail</span>
+            <button id="closeDetail" class="close-btn">X</button>
+        </div>
+        <div class="detail-content">
+            <p class="detail-timestamp"></p>
+            <p class="detail-message"></p>
+        </div>
+    </div>
     <div class="dashboard">
         <div class="sidebar">
             <ul>

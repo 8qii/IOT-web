@@ -13,16 +13,18 @@
 }
 
 .card {
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-left: 50px;
-    padding-right: 50px;
-    /* Tăng padding để widget cao hơn */
-    border-radius: 10px;
-    text-align: center;
-    width: 220px;
-    /* Có thể tăng width nếu cần */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    width: 340px;
+    /* Kích thước cố định của card */
+    height: 200px;
+    /* Chiều cao cố định của card */
+    padding: 20px;
+    /* Padding để nội dung không bị dính vào viền */
+    box-sizing: border-box;
+    /* Đảm bảo padding không làm tăng kích thước tổng cộng */
+    border-radius: 9px;
+    /* Bo tròn góc của card */
+    color: #fff;
+    font-weight: bold;
 }
 
 .card h3 {
@@ -115,7 +117,7 @@
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-radius: 8px;
-    border: 2px solid #ccc;
+    border: 1px solid #ccc;
     /* Thêm đường viền dưới */
 }
 
@@ -224,3 +226,4 @@ input:checked+.slider:before {
     border-top: 1px solid #ddd;
     margin: 0;
 }
+

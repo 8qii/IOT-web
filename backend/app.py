@@ -113,18 +113,39 @@ def update_status():
     data = request.json
     device_name = data['device_name']
     status = data['status']
-    # Lấy giờ hiện tại theo múi giờ Việt Nam
     timestamp = get_current_time_in_vietnam()
 
     conn = sqlite3.connect('iot.db')
     cursor = conn.cursor()
 
+    # Lưu trạng thái thiết bị vào bảng devices
     cursor.execute("INSERT INTO devices (device_name, status, timestamp) VALUES (?, ?, ?)",
                    (device_name, status, timestamp))
     conn.commit()
+
+    # Tạo thông báo và lưu vào bảng notification
+    notification_message = f'Device {device_name} has been {
+        "turned on" if status == "on" else "turned off"}'
+    cursor.execute("INSERT INTO notification (message) VALUES (?)",
+                   (notification_message,))
+    conn.commit()
+
     conn.close()
 
     return jsonify({'message': 'Status updated successfully'})
+
+@app.route('/api/notifications', methods=['GET'])
+def get_notifications():
+    conn = sqlite3.connect('iot.db')
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT message, timestamp FROM notification ORDER BY id DESC LIMIT 10")
+    rows = cursor.fetchall()
+
+    notifications = [{'message': row[0], 'timestamp': row[1]} for row in rows]
+    conn.close()
+
+    return jsonify(notifications)
 
 
 
