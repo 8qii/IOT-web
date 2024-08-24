@@ -6,4 +6,3 @@ Version 4: bigupdate
 
 Next version:
 - thêm biểu đồ chi tiết
-- thêm tính tăng auto
