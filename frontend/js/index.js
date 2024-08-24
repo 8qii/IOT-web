@@ -55,7 +55,7 @@ function syncDeviceStatus() {
         .catch(error => console.error('Error fetching device status:', error));
 }
 
-// Hàm khởi tạo biểu đồ
+// Hàm khởi tạo biểu đồ chính
 function initializeChart() {
     fetch("http://127.0.0.1:5000/api/chart_data")
         .then(response => response.json())
@@ -65,7 +65,7 @@ function initializeChart() {
             const lights = data.map(item => item[2] !== null ? item[2] : 0);
 
             const ctx = document.getElementById('myChart').getContext('2d');
-            const myChart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: Array.from({ length: data.length }, (_, i) => `Mốc ${i + 1}`),
@@ -103,14 +103,101 @@ function initializeChart() {
         .catch(error => console.error('Error fetching data:', error));
 }
 
-// Bắt đầu cập nhật dữ liệu ngay khi DOM đã tải xong
+// Hàm khởi tạo biểu đồ chi tiết khi cửa sổ chi tiết mở
+function initializeDetailedCharts() {
+    fetch("http://127.0.0.1:5000/api/chart_data")
+        .then(response => response.json())
+        .then(data => {
+            const temperatures = data.map(item => item[0] !== null ? item[0] : 0);
+            const humidities = data.map(item => item[1] !== null ? item[1] : 0);
+            const lights = data.map(item => item[2] !== null ? item[2] : 0);
+
+            // Biểu đồ nhiệt độ chi tiết
+            const tempCtx = document.getElementById('lineChart').getContext('2d');
+            new Chart(tempCtx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: data.length }, (_, i) => `Mốc ${i + 1}`),
+                    datasets: [{
+                        label: 'Nhiệt độ (°C)',
+                        data: temperatures,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Biểu đồ độ ẩm chi tiết
+            const humidityCtx = document.getElementById('humidityChart').getContext('2d');
+            new Chart(humidityCtx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: data.length }, (_, i) => `Mốc ${i + 1}`),
+                    datasets: [{
+                        label: 'Độ ẩm (%)',
+                        data: humidities,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Biểu đồ ánh sáng chi tiết
+            const lightCtx = document.getElementById('lightChart').getContext('2d');
+            new Chart(lightCtx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: data.length }, (_, i) => `Mốc ${i + 1}`),
+                    datasets: [{
+                        label: 'Ánh sáng (Lux)',
+                        data: lights,
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
     fetchSensorData();
     syncDeviceStatus();
     initializeChart();
     startUpdatingTime(); // Bắt đầu cập nhật thời gian thực
+
+    // Gán sự kiện cho nút chi tiết và đóng cửa sổ chi tiết
+    document.getElementById('detailButton').addEventListener('click', function () {
+        document.getElementById('detailChartModal').style.display = 'flex';
+        initializeDetailedCharts(); // Khởi tạo biểu đồ chi tiết khi cửa sổ mở
+    });
+
+    document.getElementById('closeButton').addEventListener('click', function () {
+        document.getElementById('detailChartModal').style.display = 'none';
+    });
+    // Đóng modal khi nhấp vào vùng nền ngoài modal
+    document.getElementById('detailChartModal').addEventListener('click', function (event) {
+        if (event.target === this) {
+            this.style.display = 'none';
+        }
+    });
 });
 
 // Tự động cập nhật dữ liệu cảm biến mỗi 60 giây
 setInterval(fetchSensorData, 60000);
-
