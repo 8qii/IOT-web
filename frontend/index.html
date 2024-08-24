@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IOT Dashboard</title>
+    <link rel="stylesheet" href="css\styles.css">
+    <link rel="stylesheet" href="css\all.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js\index.js"></script>
+    <script src="js\all.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    <nav>
+        <div class="navdiv">
+            <h2>IOT Dashboard</h2>
+            <!-- Phần bên phải của navbar -->
+            <div class="navbar-right">
+                <div class="notification">
+                    <img src="img/notificationIcon.png" alt="Thông báo" class="notification-icon"
+                        onclick="toggleNotifications()">
+                    <div id="notificationDropdown" class="notification-dropdown">
+                        <!-- Các thông báo sẽ được thêm vào đây qua JavaScript -->
+                    </div>
+                </div>
+                <div class="user-info" onclick="goToProfile()">
+                    <img src="img/profileIcon.png" alt="Avatar" class="user-avatar">
+                    <span>Hoàng Anh Quân</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div id="overlay" class="overlay"></div>
+    <!-- Cửa sổ chi tiết thông báo -->
+    <div id="notificationDetail" class="notification-detail">
+        <div class="detail-header">
+            <span class="detail-title">Notification Detail</span>
+            <button id="closeDetail" class="close-btn">X</button>
+        </div>
+        <div class="detail-content">
+            <p class="detail-timestamp"></p>
+            <p class="detail-message"></p>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <div class="sidebar">
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="thongKe.html">Thống kê môi trường</a></li>
+                <li><a href="lichSu.html">Lịch sử thiết bị</a></li>
+                <li><a href="myProfile.html">Trang cá nhân</a></li>
+            </ul>
+        </div>
+    
+        <!-- Phần nội dung chính -->
+        <div class="content">
+            <div class="time-display" id="currentTime"></div>
+            <div class="cards">
+                <div class="card">
+                    <h3>Nhiệt độ</h3>
+                    <p id="temperature">--°C</p>
+                </div>
+                <div class="card">
+                    <h3>Độ ẩm</h3>
+                    <p id="humidity">--%</p>
+                </div>
+                <div class="card">
+                    <h3>Độ sáng</h3>
+                    <p id="light">--lux</p>
+                </div>
+            </div>
+            <!-- New sections -->
+            <div class="bottom-content">
+                <div class="bottom-section left-bg">
+                    <div>
+                        <h2>Thống kê thời gian thực</h2>
+                    </div>
+                    <canvas id="myChart"></canvas>
+                </div>
+                <div class="bottom-section right-bg">
+                    <div>
+                        <h2>Điều khiển thiết bị thông minh</h2>
+                    </div>
+                    <div class="deviceControl">
+                        <div class="device">
+                            <img src="img/lightIcon.png" alt="light" class="device-icon">
+                            <span>Đèn</span>
+                            <label class="switch">
+                                <input type="checkbox" data-device="light">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <hr class="divider">
+                        <div class="device">
+                            <img src="img/fanIcon.png" alt="fan" class="device-icon">
+                            <span>Quạt</span>
+                            <label class="switch">
+                                <input type="checkbox" data-device="fan">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <hr class="divider">
+                        <div class="device">
+                            <img src="img/condIcon.png" alt="cond" class="device-icon">
+                            <span>Điều hòa</span>
+                            <label class="switch">
+                                <input type="checkbox" data-device="ac">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

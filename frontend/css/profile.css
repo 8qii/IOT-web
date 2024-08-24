@@ -1,0 +1,58 @@
+.myInfo {
+    display: flex;
+    justify-content: center;
+    /* Đưa toàn bộ phần student-info ra giữa theo chiều ngang */
+    align-items: center;
+    /* Căn giữa theo chiều dọc nếu .myInfo có chiều cao lớn */
+    height: 80vh;
+    /* Chiều cao của .myInfo là toàn bộ chiều cao màn hình */
+}
+
+.student-info-container {
+    text-align: center;
+    /* Căn giữa tiêu đề */
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    /* Căn giữa ảnh và phần giới thiệu theo chiều dọc */
+    text-align: left;
+    /* Đảm bảo phần giới thiệu được căn trái */
+    margin-left: 220px;
+    justify-content: center;
+}
+
+.student-info img {
+    margin-right: 40px;
+    /* Tạo khoảng cách giữa ảnh và phần giới thiệu */
+}
+
+.khoi_inf {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.inf {
+    margin: 10px 0;
+}
+
+.pic,
+.khoi_inf {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+.inf {
+    font-size: 22px;
+}
+
+.gt {
+    font-size: 45px;
+    margin-bottom: 40px;
+    /* Tạo khoảng cách giữa tiêu đề và phần giới thiệu bên dưới */
+}
+
+
