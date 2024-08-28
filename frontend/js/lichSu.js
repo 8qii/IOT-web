@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
         switch (deviceName) {
             case 'light':
                 return 'Đèn';
-            case 'cond':
+            case 'ac':
                 return 'Điều hòa';
             case 'fan':
                 return 'Quạt thông gió';
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${item.id}</td>
                 <td>${mapDeviceName(item.device_name)}</td> <!-- Áp dụng chuyển đổi tên thiết bị -->
                 <td>${item.status.toUpperCase()}</td>
-                <td>${item.timestamp}</td>
+                <td>${item.time}</td>
             `;
             tableBody.appendChild(row);
         });

@@ -1,58 +1,57 @@
 .myInfo {
-    display: flex;
-    justify-content: center;
-    /* Đưa toàn bộ phần student-info ra giữa theo chiều ngang */
-    align-items: center;
-    /* Căn giữa theo chiều dọc nếu .myInfo có chiều cao lớn */
-    height: 80vh;
-    /* Chiều cao của .myInfo là toàn bộ chiều cao màn hình */
+    top: 70px
 }
 
-.student-info-container {
+.profile-container {
+    display: flex;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 1000px;
+    overflow: hidden;
+}
+
+.left-section {
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 30px;
+    width: 30%;
     text-align: center;
-    /* Căn giữa tiêu đề */
 }
 
-.student-info {
-    display: flex;
-    align-items: center;
-    /* Căn giữa ảnh và phần giới thiệu theo chiều dọc */
-    text-align: left;
-    /* Đảm bảo phần giới thiệu được căn trái */
-    margin-left: 220px;
-    justify-content: center;
+.avatar {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 20px;
 }
 
-.student-info img {
-    margin-right: 40px;
-    /* Tạo khoảng cách giữa ảnh và phần giới thiệu */
-}
-
-.khoi_inf {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-.inf {
+.name {
+    font-size: 24px;
     margin: 10px 0;
 }
 
-.pic,
-.khoi_inf {
-    display: inline-block;
-    vertical-align: middle;
+.student-id,
+.info {
+    margin: 5px 0;
+    font-size: 16px;
 }
 
-
-.inf {
-    font-size: 22px;
+.right-section {
+    padding: 30px;
+    width: 70%;
 }
 
-.gt {
-    font-size: 45px;
-    margin-bottom: 40px;
-    /* Tạo khoảng cách giữa tiêu đề và phần giới thiệu bên dưới */
+.right-section h1 {
+    font-size: 28px;
+    color: #ffffff;
+    margin-bottom: 20px;
 }
 
-
+.right-section p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}

@@ -244,3 +244,78 @@ canvas {
     outline: none;
     /* Loại bỏ viền khi nút được chọn */
 }
+
+/* CSS cho các hình ảnh nền của thẻ Nhiệt độ */
+.temperature-low {
+    background-image: url('../img/cardBg/coolBg.png');
+}
+
+.temperature-medium {
+    background-image: url('../img/cardBg/warmBg.png');
+}
+
+.temperature-high {
+    background-image: url('../img/cardBg/hotBg.png');
+}
+
+/* CSS cho các hình ảnh nền của thẻ Độ ẩm */
+.humidity-low {
+    background-image: url('../img/cardBg/lowHumid.png');
+}
+
+.humidity-medium {
+    background-image: url('../img/cardBg/mediumHumid.png');
+}
+
+.humidity-high {
+    background-image: url('../img/cardBg/highHumid.png');
+}
+
+/* CSS cho các hình ảnh nền của thẻ Độ sáng */
+.light-low {
+    background-image: url('../img/cardBg/lowLight.png');
+}
+
+.light-medium {
+    background-image: url('../img/cardBg/mediumLight.png');
+}
+
+.light-high {
+    background-image: url('../img/cardBg/highLight.png');
+}
+
+.card {
+    transition: background-image 0.5s ease;
+    background-size: cover;
+    background-position: center;
+}
+
+.top_left {
+   display: flex;
+}
+
+#detailButton {
+    background-color: #2196F3;
+    /* Xanh dương nhạt */
+    color: #FFFFFF;
+    /* Màu chữ trắng */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-left: 100px;
+    margin-top: 15px;
+    height: 35px;
+}
+
+#detailButton:hover {
+    background-color: #1976D2;
+    /* Xanh dương đậm hơn khi hover */
+}
+
+#detailButton:focus {
+    outline: none;
+    /* Loại bỏ viền khi nút được chọn */
+}

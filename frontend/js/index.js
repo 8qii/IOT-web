@@ -175,6 +175,37 @@ function initializeDetailedCharts() {
         .catch(error => console.error('Error fetching data:', error));
 }
 
+function updateCardColors() {
+    const temperature = parseFloat(document.getElementById('temperature').textContent);
+    const humidity = parseFloat(document.getElementById('humidity').textContent);
+    const light = parseFloat(document.getElementById('light').textContent);
+
+    updateCardColor('temperature', temperature, [15, 30, 40], 'temperature');
+    updateCardColor('humidity', humidity, [30, 70, 80], 'humidity');
+    updateCardColor('light', light, [200, 700, 1000], 'light');
+}
+
+function updateCardColor(id, value, thresholds, type) {
+    const card = document.getElementById(id).closest('.card');
+    card.classList.remove(`${type}-low`, `${type}-medium`, `${type}-high`);
+
+    if (value <= thresholds[0]) {
+        card.classList.add(`${type}-low`);
+    } else if (value > thresholds[0] && value <= thresholds[1]) {
+        card.classList.add(`${type}-medium`);
+    } else {
+        card.classList.add(`${type}-high`);
+    }
+}
+
+
+// Giả sử bạn cập nhật dữ liệu mỗi giây
+setInterval(() => {
+    // Hàm này nên được gọi sau khi cập nhật giá trị nhiệt độ, độ ẩm, và độ sáng
+    updateCardColors();
+}, 1);
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
     fetchSensorData();
