@@ -50,13 +50,13 @@
     <div class="dashboard">
         <div class="sidebar">
             <ul>
-                <li><a href="index.html">Trang chủ</a></li>
-                <li><a href="thongKe.html">Thống kê môi trường</a></li>
-                <li><a href="lichSu.html">Lịch sử thiết bị</a></li>
-                <li><a href="myProfile.html">Trang cá nhân</a></li>
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="thongKe.html">Sensor Data</a></li>
+                <li><a href="lichSu.html">Device History</a></li>
+                <li><a href="myProfile.html">Profile</a></li>
             </ul>
         </div>
-    
+
         <!-- Phần nội dung chính -->
         <div class="content">
             <div class="time-display" id="currentTime"></div>
@@ -106,40 +106,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="bottom-section right-bg">
-                    <div>
-                        <h2>Điều khiển thiết bị thông minh</h2>
+            <div class="bottom-section right-bg">
+                <div>
+                    <h2>Điều khiển thiết bị thông minh</h2>
+                </div>
+                <div class="deviceControl">
+                    <div class="device">
+                        <img src="img/lightOff.png" alt="light" class="device-icon" id="light-icon">
+                        <span>Đèn</span>
+                        <label class="switch">
+                            <input type="checkbox" data-device="light" id="light-switch">
+                            <span class="slider round"></span>
+                        </label>
                     </div>
-                    <div class="deviceControl">
-                        <div class="device">
-                            <img src="img/lightIcon.png" alt="light" class="device-icon">
-                            <span>Đèn</span>
-                            <label class="switch">
-                                <input type="checkbox" data-device="light">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <hr class="divider">
-                        <div class="device">
-                            <img src="img/fanIcon.png" alt="fan" class="device-icon">
-                            <span>Quạt</span>
-                            <label class="switch">
-                                <input type="checkbox" data-device="fan">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <hr class="divider">
-                        <div class="device">
-                            <img src="img/condIcon.png" alt="cond" class="device-icon">
-                            <span>Điều hòa</span>
-                            <label class="switch">
-                                <input type="checkbox" data-device="ac">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
+                    <hr class="divider">
+                    <div class="device">
+                        <img src="img/fanOff.png" alt="fan" class="device-icon" id="fan-icon">
+                        <span>Quạt</span>
+                        <label class="switch">
+                            <input type="checkbox" data-device="fan" id="fan-switch">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <hr class="divider">
+                    <div class="device">
+                        <img src="img/condOff.png" alt="ac" class="device-icon" id="ac-icon">
+                        <span>Điều hòa</span>
+                        <label class="switch">
+                            <input type="checkbox" data-device="ac" id="ac-switch">
+                            <span class="slider round"></span>
+                        </label>
                     </div>
                 </div>
-            
+            </div>
+
             </div>
         </div>
     </div>

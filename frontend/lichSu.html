@@ -50,33 +50,51 @@
     <div class="dashboard">
         <div class="sidebar">
             <ul>
-                <li><a href="index.html">Trang chủ</a></li>
-                <li><a href="thongKe.html">Thống kê môi trường</a></li>
-                <li><a href="lichSu.html">Lịch sử thiết bị</a></li>
-                <li><a href="myProfile.html">Trang cá nhân</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="thongKe.html">Sensor Data</a></li>
+                <li class="active"><a href="lichSu.html">Device History</a></li>
+                <li><a href="myProfile.html">Profile</a></li>
             </ul>
         </div>
         <div class="container">
             <h1>Lịch Sử Bật/Tắt Thiết Bị</h1>
+        
+            <div class="table-controls">
+                <div class="entries-select">
+                    <label for="entriesPerPage">Hiển thị:</label>
+                    <select id="entriesPerPage">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                    </select>
+                    <span>hàng</span>
+                </div>
+        
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm..." />
+                </div>
+            </div>
+        
             <table id="dataTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Tên Thiết Bị</th>
-                        <th>Trạng Thái</th>
-                        <th>Thời Gian</th>
+                        <th data-sort="id">ID</th>
+                        <th data-sort="device_name">Tên Thiết Bị</th>
+                        <th data-sort="status">Trạng Thái</th>
+                        <th data-sort="time">Thời Gian</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Dữ liệu sẽ được thêm vào đây bằng JavaScript -->
                 </tbody>
             </table>
-
+        
             <div id="pagination">
                 <!-- Các nút phân trang sẽ được thêm vào đây -->
             </div>
-
         </div>
+
+
     </div>
 
 </body>

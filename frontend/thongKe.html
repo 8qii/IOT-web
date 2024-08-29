@@ -50,34 +50,57 @@
     <div class="dashboard">
         <div class="sidebar">
             <ul>
-                <li><a href="index.html">Trang chủ</a></li>
-                <li><a href="thongKe.html">Thống kê môi trường</a></li>
-                <li><a href="lichSu.html">Lịch sử thiết bị</a></li>
-                <li><a href="myProfile.html">Trang cá nhân</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li class="active"><a href="thongKe.html">Sensor Data</a></li>
+                <li><a href="lichSu.html">Device History</a></li>
+                <li><a href="myProfile.html">Profile</a></li>
             </ul>
         </div>
         <div class="container">
             <h1>Dữ liệu Thống Kê Môi Trường</h1>
+        
+            <div class="table-controls">
+                <div class="entries-select">
+                    <label for="entriesSelect">Hiển thị:</label>
+                    <select id="entriesSelect">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                    </select>
+                    <span>hàng</span>
+                </div>
+        
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm theo thời gian..." />
+                </div>
+            </div>
+        
             <table id="dataTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nhiệt độ</th>
-                        <th>Độ ẩm</th>
-                        <th>Độ sáng</th>
-                        <th>Thời gian</th>
+                        <th data-sort="id" class="sortable">ID <span class="sort-arrow asc">▲</span><span
+                                class="sort-arrow desc">▼</span></th>
+                        <th data-sort="nhiet_do" class="sortable">Nhiệt độ <span class="sort-arrow asc">▲</span><span
+                                class="sort-arrow desc">▼</span></th>
+                        <th data-sort="do_am" class="sortable">Độ ẩm <span class="sort-arrow asc">▲</span><span
+                                class="sort-arrow desc">▼</span></th>
+                        <th data-sort="do_sang" class="sortable">Độ sáng <span class="sort-arrow asc">▲</span><span
+                                class="sort-arrow desc">▼</span></th>
+                        <th data-sort="time" class="sortable">Thời gian <span class="sort-arrow asc">▲</span><span
+                                class="sort-arrow desc">▼</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Dữ liệu sẽ được thêm vào đây bằng JavaScript -->
                 </tbody>
             </table>
-
+        
             <div id="pagination">
                 <!-- Các nút phân trang sẽ được thêm vào đây -->
             </div>
-
         </div>
+
+
     </div>
 
 </body>

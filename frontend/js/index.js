@@ -38,6 +38,13 @@ function startUpdatingTime() {
     setInterval(updateTime, 1000); // Cập nhật thời gian mỗi giây
 }
 
+// Hàm để thay đổi hình ảnh dựa trên trạng thái của switch
+function updateDeviceIcon(switchElement, iconElement, imgOn, imgOff) {
+    if (switchElement && iconElement) {
+        iconElement.src = switchElement.checked ? imgOn : imgOff;
+    }
+}
+
 // Hàm đồng bộ trạng thái thiết bị
 function syncDeviceStatus() {
     fetch('http://127.0.0.1:5000/api/device-status')
@@ -49,11 +56,25 @@ function syncDeviceStatus() {
                 const deviceName = switchElement.getAttribute('data-device');
                 if (deviceName && data[deviceName]) {
                     switchElement.checked = data[deviceName] === 'on';
+
+                    // Cập nhật hình ảnh tương ứng với trạng thái
+                    const iconElement = document.getElementById(`${deviceName}-icon`);
+                    if (deviceName === 'light') {
+                        updateDeviceIcon(switchElement, iconElement, 'img/lightOn.png', 'img/lightOff.png');
+                    } else if (deviceName === 'fan') {
+                        updateDeviceIcon(switchElement, iconElement, 'img/fanOn.png', 'img/fanOff.png');
+                    } else if (deviceName === 'ac') {
+                        updateDeviceIcon(switchElement, iconElement, 'img/condOn.png', 'img/condOff.png');
+                    }
                 }
             });
         })
         .catch(error => console.error('Error fetching device status:', error));
 }
+
+// Gọi hàm đồng bộ trạng thái khi trang được tải
+document.addEventListener('DOMContentLoaded', syncDeviceStatus);
+
 
 // Hàm khởi tạo biểu đồ chính
 function initializeChart() {
@@ -232,3 +253,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Tự động cập nhật dữ liệu cảm biến mỗi 60 giây
 setInterval(fetchSensorData, 60000);
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Lấy các phần tử switch và ảnh tương ứng
+    const lightSwitch = document.getElementById('light-switch');
+    const fanSwitch = document.getElementById('fan-switch');
+    const acSwitch = document.getElementById('ac-switch');
+
+    const lightIcon = document.getElementById('light-icon');
+    const fanIcon = document.getElementById('fan-icon');
+    const acIcon = document.getElementById('ac-icon');
+
+    // Hàm để thay đổi hình ảnh dựa trên trạng thái của switch
+    function updateDeviceIcon(switchElement, iconElement, imgOn, imgOff) {
+        if (switchElement.checked) {
+            iconElement.src = imgOn;
+        } else {
+            iconElement.src = imgOff;
+        }
+    }
+
+    // Thêm sự kiện cho từng switch
+    lightSwitch.addEventListener('change', function () {
+        updateDeviceIcon(lightSwitch, lightIcon, 'img/lightOn.png', 'img/lightOff.png');
+    });
+
+    fanSwitch.addEventListener('change', function () {
+        updateDeviceIcon(fanSwitch, fanIcon, 'img/fanOn.png', 'img/fanOff.png');
+    });
+
+    acSwitch.addEventListener('change', function () {
+        updateDeviceIcon(acSwitch, acIcon, 'img/condOn.png', 'img/condOff.png');
+    });
+});
