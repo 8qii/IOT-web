@@ -1,5 +1,7 @@
-Version 6
+Version 8
 Cập nhật
-- tính năng thay đổi nền các card cảm biến
-- fix lỗi trang lịch sử
-- sửa button
+- sidebar update
+- thêm tính năng số hàng mỗi trang
+- cải thiện giao diện
+- sort trang
+- icon bật tắt
