@@ -199,3 +199,30 @@ th.sortable.desc .sort-arrow.asc {
 }
 
 
+.filter-controls {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+}
+
+.filter-controls label {
+    margin-right: 10px;
+}
+
+.filter-controls select {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s ease;
+    margin-right: 20px;
+    /* Thêm khoảng cách giữa bộ lọc và ô tìm kiếm */
+}
+
+.filter-controls select:focus {
+    border-color: #007bff;
+    outline: none;
+}

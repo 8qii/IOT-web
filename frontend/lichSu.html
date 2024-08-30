@@ -69,6 +69,18 @@
                     </select>
                     <span>hàng</span>
                 </div>
+
+                <div class="filter-controls">
+                    <label for="filterSelect">Lọc theo:</label>
+                    <select id="filterSelect">
+                        <option value="all">Tất cả</option>
+                        <option value="today">Hôm nay</option>
+                        <option value="7days">7 Ngày</option>
+                        <option value="1month">1 Tháng</option>
+                        <option value="3months">3 Tháng</option>
+                        
+                    </select>
+                </div>
         
                 <div class="search-bar">
                     <input type="text" id="searchInput" placeholder="Tìm kiếm..." />
@@ -78,10 +90,10 @@
             <table id="dataTable">
                 <thead>
                     <tr>
-                        <th data-sort="id">ID</th>
-                        <th data-sort="device_name">Tên Thiết Bị</th>
-                        <th data-sort="status">Trạng Thái</th>
-                        <th data-sort="time">Thời Gian</th>
+                        <th data-sort="id" class="sortable">ID <span class="sort-arrow asc">▲</span><span class="sort-arrow desc">▼</span></th>
+                        <th data-sort="device_name" class="sortable">Tên Thiết Bị <span class="sort-arrow asc">▲</span><span class="sort-arrow desc">▼</span></th>
+                        <th data-sort="status" class="sortable">Trạng Thái <span class="sort-arrow asc">▲</span><span class="sort-arrow desc">▼</span></th>
+                        <th data-sort="time" class="sortable">Thời Gian <span class="sort-arrow asc">▲</span><span class="sort-arrow desc">▼</span></th>
                     </tr>
                 </thead>
                 <tbody>

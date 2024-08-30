@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let filteredData = [];
     let sortDirection = {};
 
-    async function fetchData() {
+    async function fetchData(filter = 'all') {
         try {
-            const response = await fetch('http://localhost:5000/api/devices');
+            const response = await fetch(`http://localhost:5000/api/devices-filter?filter=${filter}`);
             data = await response.json();
             filteredData = data;
             displayData();
@@ -116,6 +116,15 @@ document.addEventListener('DOMContentLoaded', function () {
             return 0;
         });
 
+        // Xóa lớp sắp xếp khỏi tất cả các cột
+        document.querySelectorAll('th.sortable').forEach(header => {
+            header.classList.remove('asc', 'desc');
+        });
+
+        // Thêm lớp sắp xếp vào cột hiện tại
+        const header = document.querySelector(`th[data-sort="${column}"]`);
+        header.classList.add(direction);
+
         displayData();
     }
 
@@ -136,5 +145,11 @@ document.addEventListener('DOMContentLoaded', function () {
         setupPagination();
     });
 
+    document.getElementById('filterSelect').addEventListener('change', (event) => {
+        const filterValue = event.target.value;
+        fetchData(filterValue);
+    });
+
+    // Lấy dữ liệu mặc định khi trang được tải
     fetchData();
 });

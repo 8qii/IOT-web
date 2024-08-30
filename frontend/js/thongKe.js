@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let filteredData = []; // Dữ liệu sau khi tìm kiếm
     let sortDirection = {}; // Trạng thái sắp xếp cho từng cột
 
-    async function fetchData() {
+    async function fetchData(filter = 'all') {
         try {
-            const response = await fetch('http://localhost:5000/api/sensors/all');
+            const response = await fetch(`http://localhost:5000/api/sensors-filter?filter=${filter}`);
             data = await response.json();
             filteredData = data; // Ban đầu dữ liệu chưa được lọc
             displayData();
@@ -124,12 +124,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    fetchData();
-
     document.getElementById('entriesSelect').addEventListener('change', function () {
         rowsPerPage = parseInt(this.value); // Cập nhật giá trị toàn cục
         currentPage = 1; // Reset lại trang
         displayData();
         setupPagination();
     });
+
+    document.getElementById('filterSelect').addEventListener('change', function () {
+        fetchData(this.value); // Fetch lại dữ liệu với bộ lọc đã chọn
+    });
+
+    // Fetch dữ liệu mặc định khi tải trang
+    fetchData();
 });

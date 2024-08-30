@@ -5,13 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IOT Dashboard</title>
-    <link rel="stylesheet" href="css\styles.css">
-    <link rel="stylesheet" href="css\all.css">
-    <script src="js\chart.js"></script>
-    <script src="js\index.js"></script>
-    <script src="js\all.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/all.css">
+    <script src="js/chart.js"></script>
+    <script src="js/index.js" defer></script>
+    <script src="js/all.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
@@ -35,6 +34,7 @@
         </div>
     </nav>
     <div id="overlay" class="overlay"></div>
+
     <!-- Cửa sổ chi tiết thông báo -->
     <div id="notificationDetail" class="notification-detail">
         <div class="detail-header">
@@ -61,19 +61,20 @@
         <div class="content">
             <div class="time-display" id="currentTime"></div>
             <div class="cards">
-                <div class="card">
+                <div class="card" id="temperatureCard">
                     <h3>Nhiệt độ</h3>
                     <p id="temperature">--°C</p>
                 </div>
-                <div class="card">
+                <div class="card" id="humidityCard">
                     <h3>Độ ẩm</h3>
                     <p id="humidity">--%</p>
                 </div>
-                <div class="card">
+                <div class="card" id="lightCard">
                     <h3>Độ sáng</h3>
                     <p id="light">--lux</p>
                 </div>
             </div>
+
             <!-- New sections -->
             <div class="bottom-content">
                 <div class="bottom-section left-bg">
@@ -84,7 +85,7 @@
                     </div>
                     <canvas id="myChart"></canvas>
                 </div>
-                
+
                 <!-- Cửa sổ chi tiết, mặc định ẩn -->
                 <div id="detailChartModal" class="detail-chart-modal" style="display: none;">
                     <div class="DetailChart">
@@ -106,39 +107,40 @@
                         </div>
                     </div>
                 </div>
-            <div class="bottom-section right-bg">
-                <div>
-                    <h2>Điều khiển thiết bị thông minh</h2>
+
+                <div class="bottom-section right-bg">
+                    <div>
+                        <h2>Điều khiển thiết bị thông minh</h2>
+                    </div>
+                    <div class="deviceControl">
+                        <div class="device">
+                            <img src="img/lightOff.png" alt="light" class="device-icon" id="light-icon">
+                            <span>Đèn</span>
+                            <label class="switch">
+                                <input type="checkbox" data-device="light" id="light-switch">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <hr class="divider">
+                        <div class="device">
+                            <img src="img/fanOff.png" alt="fan" class="device-icon" id="fan-icon">
+                            <span>Quạt</span>
+                            <label class="switch">
+                                <input type="checkbox" data-device="fan" id="fan-switch">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <hr class="divider">
+                        <div class="device">
+                            <img src="img/condOff.png" alt="ac" class="device-icon" id="ac-icon">
+                            <span>Điều hòa</span>
+                            <label class="switch">
+                                <input type="checkbox" data-device="ac" id="ac-switch">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                <div class="deviceControl">
-                    <div class="device">
-                        <img src="img/lightOff.png" alt="light" class="device-icon" id="light-icon">
-                        <span>Đèn</span>
-                        <label class="switch">
-                            <input type="checkbox" data-device="light" id="light-switch">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                    <hr class="divider">
-                    <div class="device">
-                        <img src="img/fanOff.png" alt="fan" class="device-icon" id="fan-icon">
-                        <span>Quạt</span>
-                        <label class="switch">
-                            <input type="checkbox" data-device="fan" id="fan-switch">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                    <hr class="divider">
-                    <div class="device">
-                        <img src="img/condOff.png" alt="ac" class="device-icon" id="ac-icon">
-                        <span>Điều hòa</span>
-                        <label class="switch">
-                            <input type="checkbox" data-device="ac" id="ac-switch">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
 
             </div>
         </div>

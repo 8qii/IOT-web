@@ -86,10 +86,19 @@ function initializeChart() {
             const lights = data.map(item => item[2] !== null ? item[2] : 0);
 
             const ctx = document.getElementById('myChart').getContext('2d');
+            // Cấu hình nhãn trục x
+            const xAxisLabels = Array.from({ length: data.length }, (_, i) => {
+                if (i === 0) return 'Hiện tại';
+                if (i === 5) return '5';
+                if (i === 10) return '10';
+                if (i === 15) return '15';
+                return '';
+            });
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: Array.from({ length: data.length }, (_, i) => `Mốc ${i + 1}`),
+                    // Sử dụng nhãn rỗng ban đầu
+                    labels: Array.from({ length: data.length }, () => ''),
                     datasets: [
                         {
                             label: 'Nhiệt độ (°C)',
@@ -114,12 +123,36 @@ function initializeChart() {
                 options: {
                     animation: false,
                     scales: {
+                        x: {
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0,
+                                callback: function (value, index, values) {
+                                    // Hiển thị nhãn theo giá trị của chỉ số
+                                    return xAxisLabels[index];
+                                }
+                            },
+                            grid: {
+                                display: true,
+                                drawOnChartArea: true
+                            },
+                            title: {
+                                display: true,
+                                text: 'Phút'
+                            },
+                        },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5,
+                                maxTicksLimit: 20,
+                            }
                         }
                     }
                 }
             });
+
         })
         .catch(error => console.error('Error fetching data:', error));
 }
@@ -133,12 +166,21 @@ function initializeDetailedCharts() {
             const humidities = data.map(item => item[1] !== null ? item[1] : 0);
             const lights = data.map(item => item[2] !== null ? item[2] : 0);
 
+            // Cấu hình nhãn trục x
+            const xAxisLabels = Array.from({ length: data.length }, (_, i) => {
+                if (i === 0) return 'Hiện tại';
+                if (i === 5) return '5';
+                if (i === 10) return '10';
+                if (i === 15) return '15';
+                return '';
+            });
+
             // Biểu đồ nhiệt độ chi tiết
             const tempCtx = document.getElementById('lineChart').getContext('2d');
             new Chart(tempCtx, {
                 type: 'line',
                 data: {
-                    labels: Array.from({ length: data.length }, (_, i) => `Mốc ${i + 1}`),
+                    labels: xAxisLabels,
                     datasets: [{
                         label: 'Nhiệt độ (°C)',
                         data: temperatures,
@@ -148,7 +190,32 @@ function initializeDetailedCharts() {
                 },
                 options: {
                     scales: {
-                        y: { beginAtZero: true }
+                        x: {
+                            ticks: {
+                                autoSkip: false, // Không tự động bỏ qua nhãn
+                                maxRotation: 0,
+                                minRotation: 0,
+                                callback: function (value, index, values) {
+                                    // Hiển thị nhãn theo giá trị của chỉ số
+                                    return xAxisLabels[index];
+                                }
+                            },
+                            grid: {
+                                display: true,
+                                drawOnChartArea: true
+                            },
+                            title: {
+                                display: true,
+                                text: 'Phút'
+                            },
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5,
+                                maxTicksLimit: 20,
+                            }
+                        }
                     }
                 }
             });
@@ -158,7 +225,7 @@ function initializeDetailedCharts() {
             new Chart(humidityCtx, {
                 type: 'line',
                 data: {
-                    labels: Array.from({ length: data.length }, (_, i) => `Mốc ${i + 1}`),
+                    labels: xAxisLabels,
                     datasets: [{
                         label: 'Độ ẩm (%)',
                         data: humidities,
@@ -168,7 +235,32 @@ function initializeDetailedCharts() {
                 },
                 options: {
                     scales: {
-                        y: { beginAtZero: true }
+                        x: {
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0,
+                                callback: function (value, index, values) {
+                                    // Hiển thị nhãn theo giá trị của chỉ số
+                                    return xAxisLabels[index];
+                                }
+                            },
+                            grid: {
+                                display: true,
+                                drawOnChartArea: true
+                            },
+                            title: {
+                                display: true,
+                                text: 'Phút'
+                            },
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5,
+                                maxTicksLimit: 20,
+                            }
+                        }
                     }
                 }
             });
@@ -178,7 +270,7 @@ function initializeDetailedCharts() {
             new Chart(lightCtx, {
                 type: 'line',
                 data: {
-                    labels: Array.from({ length: data.length }, (_, i) => `Mốc ${i + 1}`),
+                    labels: xAxisLabels,
                     datasets: [{
                         label: 'Ánh sáng (Lux)',
                         data: lights,
@@ -188,13 +280,40 @@ function initializeDetailedCharts() {
                 },
                 options: {
                     scales: {
-                        y: { beginAtZero: true }
+                        x: {
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0,
+                                callback: function (value, index, values) {
+                                    // Hiển thị nhãn theo giá trị của chỉ số
+                                    return xAxisLabels[index];
+                                }
+                            },
+                            grid: {
+                                display: true,
+                                drawOnChartArea: true
+                            },
+                            title: {
+                                display: true,
+                                text: 'Phút'
+                            },
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5,
+                                maxTicksLimit: 20,
+                            }
+                        }
                     }
                 }
             });
         })
         .catch(error => console.error('Error fetching data:', error));
 }
+
+
 
 function updateCardColors() {
     const temperature = parseFloat(document.getElementById('temperature').textContent);
@@ -286,3 +405,4 @@ document.addEventListener("DOMContentLoaded", function () {
         updateDeviceIcon(acSwitch, acIcon, 'img/condOn.png', 'img/condOff.png');
     });
 });
+

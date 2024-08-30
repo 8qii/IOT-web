@@ -1,5 +1,5 @@
-Version 6
-Cập nhật
-- tính năng thay đổi nền các card cảm biến
-- fix lỗi trang lịch sử
-- sửa button
+Version 8: Some thing much better
+- day filter
+- chart update
+- sort icon update
+- cool!

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 
 app = Flask(__name__)
@@ -138,6 +138,139 @@ def get_devices_data():
     conn.close()
     return jsonify(data)
 
+
+#------------------------------------device filter by day---------------------------------
+@app.route('/api/devices-filter', methods=['GET'])
+def get_devices_data_filter():
+    # Nhận tham số "filter" từ query string
+    filter_param = request.args.get(
+        'filter', 'all')  # Giá trị mặc định là "all"
+
+    # Kết nối tới cơ sở dữ liệu
+    conn = sqlite3.connect('iot.db')
+    cursor = conn.cursor()
+
+    # Lấy thời gian hiện tại
+    now = datetime.now()
+
+    # Xây dựng câu truy vấn SQL và giá trị bộ lọc
+    query = "SELECT id, device_name, status, time FROM devices WHERE 1=1"
+    params = []
+
+    if filter_param == 'today':
+        # Lọc cho dữ liệu của ngày hôm nay
+        start_date = now.strftime('%Y-%m-%d 00:00:00')
+        end_date = now.strftime('%Y-%m-%d 23:59:59')
+        query += " AND time BETWEEN ? AND ?"
+        params.extend([start_date, end_date])
+
+    elif filter_param == '7days':
+        # Lọc cho dữ liệu trong 7 ngày qua
+        start_date = (now - timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')
+        query += " AND time >= ?"
+        params.append(start_date)
+
+    elif filter_param == '1month':
+        # Lọc cho dữ liệu trong 1 tháng qua
+        start_date = (now - timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')
+        query += " AND time >= ?"
+        params.append(start_date)
+
+    elif filter_param == '3months':
+        # Lọc cho dữ liệu trong 3 tháng qua
+        start_date = (now - timedelta(days=90)).strftime('%Y-%m-%d %H:%M:%S')
+        query += " AND time >= ?"
+        params.append(start_date)
+
+    # Sắp xếp theo thời gian mới nhất trước
+    query += " ORDER BY time DESC"
+
+    # Thực hiện truy vấn
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+
+    # Định dạng dữ liệu kết quả thành danh sách các dictionary
+    data = []
+    for row in rows:
+        data.append({
+            'id': row[0],
+            'device_name': row[1],
+            'status': row[2],
+            'time': row[3]
+        })
+
+    # Đóng kết nối cơ sở dữ liệu
+    conn.close()
+
+    # Trả về dữ liệu dưới dạng JSON
+    return jsonify(data)
+
+#-----------------------------filter sensor data------------------------------
+@app.route('/api/sensors-filter', methods=['GET'])
+def get_sensors_data_filter():
+    # Nhận tham số "filter" từ query string
+    filter_param = request.args.get(
+        'filter', 'all')  # Giá trị mặc định là "all"
+
+    # Kết nối tới cơ sở dữ liệu
+    conn = sqlite3.connect('iot.db')
+    cursor = conn.cursor()
+
+    # Lấy thời gian hiện tại
+    now = datetime.now()
+
+    # Xây dựng câu truy vấn SQL và giá trị bộ lọc
+    query = "SELECT id, temperature, humidity, light, time FROM sensors WHERE 1=1"
+    params = []
+
+    if filter_param == 'today':
+        # Lọc cho dữ liệu của ngày hôm nay
+        start_date = now.strftime('%Y-%m-%d 00:00:00')
+        end_date = now.strftime('%Y-%m-%d 23:59:59')
+        query += " AND time BETWEEN ? AND ?"
+        params.extend([start_date, end_date])
+
+    elif filter_param == '7days':
+        # Lọc cho dữ liệu trong 7 ngày qua
+        start_date = (now - timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')
+        query += " AND time >= ?"
+        params.append(start_date)
+
+    elif filter_param == '1month':
+        # Lọc cho dữ liệu trong 1 tháng qua
+        start_date = (now - timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')
+        query += " AND time >= ?"
+        params.append(start_date)
+
+    elif filter_param == '3months':
+        # Lọc cho dữ liệu trong 3 tháng qua
+        start_date = (now - timedelta(days=90)).strftime('%Y-%m-%d %H:%M:%S')
+        query += " AND time >= ?"
+        params.append(start_date)
+
+    # Sắp xếp theo thời gian mới nhất trước
+    query += " ORDER BY time DESC"
+
+    # Thực hiện truy vấn
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+
+    # Định dạng dữ liệu kết quả thành danh sách các dictionary
+    data = []
+    for row in rows:
+        data.append({
+            'id': row[0],
+            'nhiet_do': row[1],
+            'do_am': row[2],
+            'do_sang': row[3],
+            'time': row[4]
+        })
+
+    # Đóng kết nối cơ sở dữ liệu
+    conn.close()
+
+    # Trả về dữ liệu dưới dạng JSON
+    return jsonify(data)
 
 if __name__ == '__main__':
     app.run(debug=True)
