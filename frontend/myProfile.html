@@ -7,8 +7,9 @@
     <title>IOT Dashboard</title>
     <link rel="stylesheet" href="css\profile.css">
     <link rel="stylesheet" href="css\all.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/thongKeScripts.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <script src="js/all.js"></script>
     <script src="https://cdn.socket.io/4.5.2/socket.io.min.js"></script>
 
 
@@ -57,28 +58,112 @@
                 <li class="active"><a href="myProfile.html">Profile</a></li>
             </ul>
         </div>
-        <div class="myInfo">
-            <div class="student-info-container">
-                <!-- Tiêu đề giới thiệu -->
-                <p class="gt"><strong>Giới thiệu bản thân</strong></p>
-
-                <div class="student-info">
-                    <!-- Ảnh cá nhân nằm bên trái -->
-                    <img class="pic" src="img/avatar.png" alt="Ảnh của Hoàng Anh Quân" width="240" height="320">
-
-                    <!-- Phần giới thiệu cá nhân -->
-                    <ul class="khoi_inf">
-                        <p class="inf"><strong>Họ và tên:</strong> Hoàng Anh Quân </p>
-                        <p class="inf"><strong>Ngày sinh:</strong> 12/11/2003 </p>
-                        <p class="inf"><strong>Quê quán:</strong> Huyện Cẩm Xuyên, Tỉnh Hà Tĩnh </p>
-                        <p class="inf"><strong>Mã sinh viên:</strong> B21DCCN606 </p>
-                        <p class="inf"><strong>Lớp:</strong> D21CQCN06-B </p>
-                        <p class="inf"><strong>Định hướng:</strong> Nghiên cứu phát triển trí tuệ nhân tạo </p>
-                        <p class="inf"><strong>Sở thích:</strong> Thể thao, xem phim </p>
-                        <p class="inf"><strong>Github trang web: </strong><a href="https://github.com/8qii/IOT_DEMO">https://github.com/8qii/IOT_DEMO</a></p>
-                        <p class="inf"><strong>Github quá trình phát triển: </strong><a href="https://github.com/8qii/IOT-web">https://github.com/8qii/IOT-web</a></p>
-
-                    </ul>
+        <div class="student-info-container">
+            <!-- Cột trái -->
+            <div class="left-column">
+                <!-- Cột con bên trái 1 -->
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <img src="img/avatar.png" alt="avatar"
+                            class="rounded-circle" style="width: 150px;">
+                        <h5 class="my-3">Hoàng Anh Quân</h5>
+                        <p class="text-muted mb-1">Học viện công nghệ bưu chính viễn thông - PTIT</p>
+                        <p class="text-muted mb-4">Công nghệ thông tin</p>
+                    </div>
+                </div>
+                <!-- Cột con bên trái 2 -->
+                <div class="card mb-4 mb-lg-0">
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush rounded-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fab fa-github fa-lg text-body"></i>
+                                <a href="https://github.com/8qii">8qii</a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fab fa-instagram fa-lg" style="color: #ac2bac;"></i>
+                                <a href="https://www.instagram.com/_ah.quan/">_ah.quan</a>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
+                                <a href="https://www.facebook.com/Hqiii38/">Hoàng Quân</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Cột phải -->
+            <div class="right-column">
+                <!-- Cột con bên phải 1 -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Full Name</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">Hoàng Anh Quân</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Class</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">D21CQCN6-B</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Student ID</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">B21DCCN606</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Development orientation</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">AI engineer</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Phone</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">0889919819</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Email</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">hoanganhquanttcx@gmail.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Các mục khác -->
+                    </div>
+                </div>
+                <!-- Cột con bên phải 2 --> 
+                <div class="card mb-4 mb-md-0">
+                    <div class="card-body">
+                        <h3 style="font-size: 1.5rem;">Trạng thái bài tập cá nhân  </h2>
+                        <p style="margin-left: 20px; font-size: 1.3rem ;">File PDF: <a href="">Chưa cập nhật</a></p>
+                        <p style="margin-left: 20px; font-size: 1.3rem ;">Github sản phẩm: <a href="">Chưa cập nhật</a></p>
+                        <p style="margin-left: 20px; font-size: 1.3rem ;">Github phát triển: <a href="">Chưa cập nhật</a></p>
+                        <p style="margin-left: 20px; font-size: 1.3rem ;">API docs: <a href="">Chưa cập nhật</a></p>
+                    </div>
                 </div>
             </div>
         </div>

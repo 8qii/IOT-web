@@ -28,7 +28,11 @@ function updateTime() {
     const month = now.getMonth() + 1; // Lưu ý: getMonth() trả về chỉ số 0 cho tháng 1
     const year = now.getFullYear();
 
-    const formattedTime = `${day}, ${date} tháng ${month} năm ${year}`;
+    const hours = String(now.getHours()).padStart(2, '0'); // Đảm bảo giờ có 2 chữ số
+    const minutes = String(now.getMinutes()).padStart(2, '0'); // Đảm bảo phút có 2 chữ số
+    const seconds = String(now.getSeconds()).padStart(2, '0'); // Đảm bảo giây có 2 chữ số
+
+    const formattedTime = `${hours}:${minutes}:${seconds} - ${day}, ${date} tháng ${month} năm ${year}`;
     document.getElementById('currentTime').textContent = formattedTime;
 }
 

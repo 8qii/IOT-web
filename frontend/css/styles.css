@@ -12,11 +12,18 @@
 
 .time-display {
     position: absolute;
-    top: 65px;
-    right: 80px;
+    top: 60px;
+    left: 55%;
+    /* Căn giữa theo chiều ngang */
+    transform: translateX(-50%);
+    /* Căn giữa chính xác */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 18px;
     color: #333;
     font-family: 'Roboto', sans-serif;
+    padding: 8px 20px;
 }
 
 /* Phần chứa các card */
