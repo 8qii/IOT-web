@@ -5,11 +5,18 @@ document.addEventListener('DOMContentLoaded', function () {
     let filteredData = []; // Dữ liệu sau khi tìm kiếm
     let sortDirection = {}; // Trạng thái sắp xếp cho từng cột
 
-    async function fetchData(filter = 'all') {
+    async function fetchData() {
+        const filter = document.getElementById('filterSelect').value;
+        const sensorFilter = document.getElementById('sensorFilterSelect').value;
+        const searchQuery = document.getElementById('searchInput').value;
+
         try {
-            const response = await fetch(`http://localhost:5000/api/sensors-filter?filter=${filter}`);
+            const response = await fetch(`http://localhost:5000/api/sensors-filter?filter=${filter}&sensor=${sensorFilter}&search=${encodeURIComponent(searchQuery)}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
             data = await response.json();
-            filteredData = data; // Ban đầu dữ liệu chưa được lọc
+            filteredData = data; // Cập nhật dữ liệu đã lọc
             displayData();
             setupPagination();
         } catch (error) {
@@ -25,13 +32,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const end = start + rowsPerPage;
         const paginatedData = filteredData.slice(start, end);
 
+        const sensorLabels = {
+            'temperature': 'Nhiệt độ',
+            'humidity': 'Độ ẩm',
+            'light': 'Ánh sáng'
+        };
+
         paginatedData.forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
             <td>${item.id !== null ? item.id : '--'}</td>
-            <td>${item.nhiet_do !== null ? item.nhiet_do : '--'}</td>
-            <td>${item.do_am !== null ? item.do_am : '--'}</td>
-            <td>${item.do_sang !== null ? item.do_sang : '--'}</td>
+            <td>${sensorLabels[item.sensor] !== undefined ? sensorLabels[item.sensor] : '--'}</td>
+            <td>${item.value !== null ? item.value : '--'}</td>
             <td>${item.time !== null ? item.time : '--'}</td>
         `;
             tableBody.appendChild(row);
@@ -84,9 +96,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function filterData() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const sensorFilter = document.getElementById('sensorFilterSelect').value;
+
         filteredData = data.filter(item => {
-            return item.time.toLowerCase().includes(searchTerm);
+            const matchesSearch = item.time.toLowerCase().includes(searchTerm);
+            const matchesSensor = sensorFilter === 'all' || item.sensor === sensorFilter;
+            return matchesSearch && matchesSensor;
         });
+
         currentPage = 1;
         displayData();
         setupPagination();
@@ -116,6 +133,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('searchInput').addEventListener('input', filterData);
 
+    document.getElementById('sensorFilterSelect').addEventListener('change', filterData);
+
     const headers = document.querySelectorAll('#dataTable thead th');
     headers.forEach(header => {
         header.addEventListener('click', function () {
@@ -132,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('filterSelect').addEventListener('change', function () {
-        fetchData(this.value); // Fetch lại dữ liệu với bộ lọc đã chọn
+        fetchData(); // Fetch lại dữ liệu với bộ lọc đã chọn
     });
 
     // Fetch dữ liệu mặc định khi tải trang

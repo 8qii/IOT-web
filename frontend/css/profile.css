@@ -164,7 +164,7 @@
 }
 
 .card-body a{
-    color: black;
+    color: grey;
         /* Màu đen cho văn bản liên kết */
         text-decoration: none;
         /* Xóa dấu gạch chân */
@@ -175,3 +175,4 @@
     text-decoration: none;
     /* Không có gạch chân khi hover */
 }
+

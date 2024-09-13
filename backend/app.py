@@ -4,6 +4,7 @@ import sqlite3
 from datetime import datetime, timedelta
 import pytz
 
+
 app = Flask(__name__)
 CORS(app)  # Kích hoạt CORS
 
@@ -11,18 +12,30 @@ CORS(app)  # Kích hoạt CORS
 def get_sensor_data():
     conn = sqlite3.connect('iot.db')
     cursor = conn.cursor()
-    cursor.execute(
-        "SELECT temperature, humidity, light FROM sensors ORDER BY id DESC LIMIT 1")
-    data = cursor.fetchone()
+
+    # Truy vấn để lấy giá trị mới nhất của mỗi cảm biến
+    cursor.execute("""
+        SELECT sensor, value, time 
+        FROM sensors 
+        WHERE id IN (
+            SELECT MAX(id) 
+            FROM sensors 
+            WHERE sensor IN ('temperature', 'humidity', 'light') 
+            GROUP BY sensor
+        )
+    """)
+
+    rows = cursor.fetchall()
     conn.close()
 
-    if data:
-        return {
-            "temperature": data[0] if data[0] is not None else "--",
-            "humidity": data[1] if data[1] is not None else "--",
-            "light": data[2] if data[2] is not None else "--"
-        }
-    return None
+    # Tạo từ điển để lưu trữ kết quả
+    data = {"temperature": "--", "humidity": "--", "light": "--"}
+
+    for row in rows:
+        sensor, value, _ = row
+        data[sensor] = value
+
+    return data if rows else None
 
 
 @app.route('/api/sensor_data', methods=['GET'])
@@ -33,23 +46,52 @@ def sensor_data():
     return jsonify({"error": "No data found"}), 404
 
 
-
 def get_chart_data():
     conn = sqlite3.connect('iot.db')
     cursor = conn.cursor()
+
+    # Truy vấn để lấy 20 mẫu dữ liệu mới nhất của mỗi loại cảm biến
     cursor.execute("""
-        SELECT temperature, humidity, light 
+        SELECT value 
         FROM sensors 
+        WHERE sensor = 'temperature' 
         ORDER BY id DESC 
         LIMIT 20
     """)
-    rows = cursor.fetchall()
+    temperatures = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT value 
+        FROM sensors 
+        WHERE sensor = 'humidity' 
+        ORDER BY id DESC 
+        LIMIT 20
+    """)
+    humidities = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT value 
+        FROM sensors 
+        WHERE sensor = 'light' 
+        ORDER BY id DESC 
+        LIMIT 20
+    """)
+    lights = cursor.fetchall()
+
     conn.close()
-    return rows
+
+    # Chuẩn bị dữ liệu trả về dưới dạng danh sách của các danh sách
+    data = list(zip(temperatures, humidities, lights))
+
+    # Chuyển đổi từ list các tuple về dạng list của list cho đúng với JS logic
+    data = [[temp[0], hum[0], light[0]] for temp, hum, light in data]
+
+    return data
+
 
 @app.route('/api/chart_data', methods=['GET'])
 def chart_data():
-    data = get_chart_data()  # Sử dụng hàm mới
+    data = get_chart_data()
     return jsonify(data)
 
 #-----------------------------------------------------------------------------------
@@ -91,7 +133,6 @@ def get_notifications():
     return jsonify(notifications)
 
 #------------------------------------Thong Ke-------------------------------------------
-
 
 @app.route('/api/sensors/all', methods=['GET'])
 def get_all_sensors_data():
@@ -206,11 +247,15 @@ def get_devices_data_filter():
     return jsonify(data)
 
 #-----------------------------filter sensor data------------------------------
+# Đảm bảo mã API trả về dữ liệu đúng định dạng
+
+
 @app.route('/api/sensors-filter', methods=['GET'])
 def get_sensors_data_filter():
-    # Nhận tham số "filter" từ query string
-    filter_param = request.args.get(
-        'filter', 'all')  # Giá trị mặc định là "all"
+    # Nhận các tham số từ query string
+    filter_param = request.args.get('filter', 'all')
+    sensor_filter = request.args.get('sensor', 'all')
+    search_query = request.args.get('search', '')
 
     # Kết nối tới cơ sở dữ liệu
     conn = sqlite3.connect('iot.db')
@@ -220,7 +265,7 @@ def get_sensors_data_filter():
     now = datetime.now()
 
     # Xây dựng câu truy vấn SQL và giá trị bộ lọc
-    query = "SELECT id, temperature, humidity, light, time FROM sensors WHERE 1=1"
+    query = "SELECT id, sensor, value, time FROM sensors WHERE 1=1"
     params = []
 
     if filter_param == 'today':
@@ -248,6 +293,14 @@ def get_sensors_data_filter():
         query += " AND time >= ?"
         params.append(start_date)
 
+    if sensor_filter != 'all':
+        query += " AND sensor = ?"
+        params.append(sensor_filter)
+
+    if search_query:
+        query += " AND time LIKE ?"
+        params.append(f'%{search_query}%')
+
     # Sắp xếp theo thời gian mới nhất trước
     query += " ORDER BY time DESC"
 
@@ -260,10 +313,9 @@ def get_sensors_data_filter():
     for row in rows:
         data.append({
             'id': row[0],
-            'nhiet_do': row[1],
-            'do_am': row[2],
-            'do_sang': row[3],
-            'time': row[4]
+            'sensor': row[1],
+            'value': row[2],
+            'time': row[3]
         })
 
     # Đóng kết nối cơ sở dữ liệu
@@ -271,6 +323,10 @@ def get_sensors_data_filter():
 
     # Trả về dữ liệu dưới dạng JSON
     return jsonify(data)
+
+#-------------------------MQTT---------------------------------------------
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

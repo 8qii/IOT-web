@@ -67,11 +67,10 @@
                         <option value="10" selected>10</option>
                         <option value="25">25</option>
                     </select>
-                    <span>hàng</span>
                 </div>
 
                 <div class="filter-controls">
-                    <label for="filterSelect">Lọc theo:</label>
+                    <label for="filterSelect">Thời gian:</label>
                     <select id="filterSelect">
                         <option value="all">Tất cả</option>
                         <option value="today">Hôm nay</option>
@@ -79,6 +78,16 @@
                         <option value="1month">1 Tháng</option>
                         <option value="3months">3 Tháng</option>
                 
+                    </select>
+                </div>
+
+                <div class="filter-controls">
+                    <label for="sensorFilterSelect">Cảm biến:</label>
+                    <select id="sensorFilterSelect">
+                        <option value="all">Tất cả</option>
+                        <option value="temperature">Nhiệt độ</option>
+                        <option value="humidity">Độ ẩm</option>
+                        <option value="light">Ánh sáng</option>
                     </select>
                 </div>
         
@@ -90,13 +99,11 @@
             <table id="dataTable">
                 <thead>
                     <tr>
-                        <th data-sort="id" class="sortable">ID <span class="sort-arrow asc">▲</span><span
+                        <th data-sort="id" class="sortable">ID <span class="sort-arrow asc">▲</span><span class="sort-arrow desc">▼</span>
+                        </th>
+                        <th data-sort="sensor" class="sortable">Cảm biến <span class="sort-arrow asc">▲</span><span
                                 class="sort-arrow desc">▼</span></th>
-                        <th data-sort="nhiet_do" class="sortable">Nhiệt độ <span class="sort-arrow asc">▲</span><span
-                                class="sort-arrow desc">▼</span></th>
-                        <th data-sort="do_am" class="sortable">Độ ẩm <span class="sort-arrow asc">▲</span><span
-                                class="sort-arrow desc">▼</span></th>
-                        <th data-sort="do_sang" class="sortable">Độ sáng <span class="sort-arrow asc">▲</span><span
+                        <th data-sort="value" class="sortable">Giá trị <span class="sort-arrow asc">▲</span><span
                                 class="sort-arrow desc">▼</span></th>
                         <th data-sort="time" class="sortable">Thời gian <span class="sort-arrow asc">▲</span><span
                                 class="sort-arrow desc">▼</span></th>
