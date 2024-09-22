@@ -1,9 +1,11 @@
+import random
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
 from datetime import datetime, timedelta
 import pytz
-
+import json
+import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
 CORS(app)  # Kích hoạt CORS
@@ -324,9 +326,105 @@ def get_sensors_data_filter():
     # Trả về dữ liệu dưới dạng JSON
     return jsonify(data)
 
-#-------------------------MQTT---------------------------------------------
+
+# -------------------------MQTT---------------------------------------------
+# Cấu hình MQTT
+mqtt_broker = "192.168.0.100"  # Địa chỉ IP của máy nhận MQTT
+mqtt_port = 1883
+mqtt_topic = "home/sensor/data"
+mqtt_topic_control = "home/device/control"  # Chủ đề điều khiển thiết bị
+
+# Hàm callback khi có tin nhắn từ MQTT
 
 
+def on_message(client, userdata, message):
+    try:
+        print(f"Received message: {message.payload.decode()}")
 
+        # Dữ liệu từ ESP32 thường là chuỗi JSON
+        payload = json.loads(message.payload.decode())
+        temperature = payload.get('temperature')
+        humidity = payload.get('humidity')
+        light = payload.get('light')  # Lấy giá trị ánh sáng từ payload
+
+        # Lưu vào cơ sở dữ liệu
+        conn = sqlite3.connect('iot.db')
+        cursor = conn.cursor()
+
+        # Lưu giá trị temperature
+        if temperature is not None:
+            cursor.execute(
+                "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('temperature', temperature))
+
+        # Lưu giá trị humidity
+        if humidity is not None:
+            cursor.execute(
+                "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('humidity', humidity))
+
+        # Lưu giá trị light
+        if light is not None:
+            cursor.execute(
+                "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('light', light))
+
+        # Commit và đóng kết nối
+        conn.commit()
+        conn.close()
+
+        print("Dữ liệu đã được lưu vào cơ sở dữ liệu")
+    except Exception as e:
+        print(f"Error while processing message: {e}")
+
+
+# Khởi tạo MQTT client và cấu hình callback
+mqtt_client = mqtt.Client()
+mqtt_client.on_message = on_message
+
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Kết nối thành công đến MQTT broker")
+        client.subscribe(mqtt_topic)  # Đăng ký lắng nghe chủ đề cần thiết
+    else:
+        print(f"Kết nối thất bại với mã lỗi: {rc}")
+
+
+mqtt_client.on_connect = on_connect
+
+# ---------------------- Flask API cho điều khiển thiết bị ----------------------
+
+
+@app.route('/api/control-device', methods=['POST'])
+def control_device():
+    try:
+        data = request.get_json()
+        device = data.get('device')
+        status = data.get('status')
+
+        if not device or not status:
+            return jsonify({'success': False, 'message': 'Thiếu thông tin thiết bị hoặc trạng thái'})
+
+        # Gửi lệnh điều khiển đến ESP32 qua MQTT
+        mqtt_payload = json.dumps({
+            'device': device,
+            'status': status
+        })
+        mqtt_client.publish(mqtt_topic_control, mqtt_payload)
+
+        return jsonify({'success': True, 'message': f'{device} is now {status}'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Lỗi: {str(e)}'})
+
+
+# Chạy Flask server
 if __name__ == '__main__':
+    # Kết nối đến MQTT broker
+    mqtt_client.connect(mqtt_broker, mqtt_port)
+
+    # Subscribe vào chủ đề từ ESP32
+    mqtt_client.subscribe(mqtt_topic)
+
+    # Bắt đầu vòng lặp MQTT để nhận dữ liệu liên tục
+    mqtt_client.loop_start()
+
+    # Khởi động Flask server
     app.run(debug=True)

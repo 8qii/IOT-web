@@ -79,6 +79,35 @@ function syncDeviceStatus() {
 // Gọi hàm đồng bộ trạng thái khi trang được tải
 document.addEventListener('DOMContentLoaded', syncDeviceStatus);
 
+// Hàm thêm sự kiện cho các nút bật/tắt thiết bị
+document.querySelectorAll('.switch input').forEach((switchElement) => {
+    switchElement.addEventListener('change', function () {
+        const device = this.getAttribute('data-device');
+        const status = this.checked ? 'on' : 'off';
+
+        // Gửi yêu cầu AJAX đến Flask server
+        fetch('http://127.0.0.1:5000/api/control-device', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                device: device,
+                status: status
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(`${device} is now ${status}`);
+                    updateDeviceIcon(device, status); // Cập nhật hình ảnh thiết bị sau khi nhận phản hồi thành công
+                } else {
+                    console.error('Error updating device');
+                }
+            });
+    });
+});
+
 
 // Hàm khởi tạo biểu đồ chính
 function initializeChart() {
@@ -409,4 +438,3 @@ document.addEventListener("DOMContentLoaded", function () {
         updateDeviceIcon(acSwitch, acIcon, 'img/condOn.png', 'img/condOff.png');
     });
 });
-

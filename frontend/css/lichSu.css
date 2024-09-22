@@ -51,19 +51,28 @@ text-align: left;
 
 
 #pagination {
-margin-top: 10px;
-display: flex;
-justify-content: center;
-/* Căn giữa các nút phân trang */
-gap: 5px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    /* Căn giữa các nút phân trang */
+    gap: 5px;
 }
 
 #pagination button {
-padding: 5px 10px;
-border: none;
-background-color: #f0f0f0;
-cursor: pointer;
-font-size: 16px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    color: black;
+    font-size: 16px;
+}
+
+#pagination span {
+    padding: 5px 10px;
+    border: none;
+    background-color: #f0f0f0;
+    font-size: 16px;
+    border-radius: 5px;
 }
 
 #pagination button.active {

@@ -66,20 +66,32 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         paginationContainer.appendChild(prevButton);
 
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.addEventListener('click', function () {
-                currentPage = i;
-                displayData();
-                setupPagination();
-            });
+        const range = 2; // Số trang trước và sau trang hiện tại sẽ được hiển thị
+        let start = Math.max(currentPage - range, 1);
+        let end = Math.min(currentPage + range, totalPages);
 
-            if (i === currentPage) {
-                pageButton.classList.add('active');
+        if (start > 1) {
+            paginationContainer.appendChild(createPageButton(1));
+            if (start > 2) {
+                const ellipsis = document.createElement('span');
+                ellipsis.textContent = '...';
+                ellipsis.className = 'ellipsis'; // Thêm class cho dấu ...
+                paginationContainer.appendChild(ellipsis);
             }
+        }
 
-            paginationContainer.appendChild(pageButton);
+        for (let i = start; i <= end; i++) {
+            paginationContainer.appendChild(createPageButton(i));
+        }
+
+        if (end < totalPages) {
+            if (end < totalPages - 1) {
+                const ellipsis = document.createElement('span');
+                ellipsis.textContent = '...';
+                ellipsis.className = 'ellipsis'; // Thêm class cho dấu ...
+                paginationContainer.appendChild(ellipsis);
+            }
+            paginationContainer.appendChild(createPageButton(totalPages));
         }
 
         const nextButton = document.createElement('button');
@@ -93,6 +105,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         paginationContainer.appendChild(nextButton);
     }
+
+    function createPageButton(pageNumber) {
+        const button = document.createElement('button');
+        button.textContent = pageNumber;
+        button.addEventListener('click', function () {
+            currentPage = pageNumber;
+            displayData();
+            setupPagination();
+        });
+
+        if (pageNumber === currentPage) {
+            button.classList.add('active');
+        }
+
+        return button;
+    }
+
 
     function filterData() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();

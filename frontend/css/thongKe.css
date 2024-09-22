@@ -52,7 +52,7 @@ tbody td {
 
 
 #pagination {
-    margin-top: 10px;
+    margin-top: 30px;
     display: flex;
     justify-content: center;
     /* Căn giữa các nút phân trang */
@@ -64,12 +64,23 @@ tbody td {
     border: none;
     background-color: #f0f0f0;
     cursor: pointer;
+    color: black;
     font-size: 16px;
+}
+
+#pagination span {
+    padding: 5px 10px;
+    border: none;
+    background-color: #f0f0f0;
+    font-size: 16px;
+    border-radius: 5px;
 }
 
 #pagination button.active {
     background-color: #007bff;
+    /* Màu nền cho nút hiện tại */
     color: white;
+    /* Màu chữ cho nút hiện tại */
 }
 
 #pagination button:hover {
