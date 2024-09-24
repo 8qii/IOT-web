@@ -9,9 +9,9 @@ DHT dht(dhtpin, dhttype);
 
 #define LDR_PIN 32  // Chân ADC để đọc tín hiệu từ LDR
 
-#define FAN_PIN 2     // LED đại diện cho quạt
-#define AC_PIN 4      // LED đại diện cho điều hòa
-#define LIGHT_PIN 5   // LED đại diện cho đèn
+#define FAN_PIN 4     // LED đại diện cho quạt
+#define AC_PIN 5      // LED đại diện cho điều hòa
+#define LIGHT_PIN 2   // LED đại diện cho đèn
 
 // Thông tin mạng WiFi
 const char* ssid = "TP-Link_CFEA";
@@ -73,9 +73,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
   } else if (String(device) == "light") {
     if (String(status) == "on") {
       digitalWrite(LIGHT_PIN, HIGH);
+      // Gửi MQTT thông báo thiết bị "light" đã bật
       client.publish(mqtt_status_topic, "{\"device\": \"light\", \"status\": \"on\"}");
     } else if (String(status) == "off") {
       digitalWrite(LIGHT_PIN, LOW);
+      // Gửi MQTT thông báo thiết bị "light" đã tắt
       client.publish(mqtt_status_topic, "{\"device\": \"light\", \"status\": \"off\"}");
     }
   }
@@ -142,7 +144,13 @@ void loop() {
   Serial.print("°C, Ánh sáng: ");
   Serial.print(light);
   Serial.println(" lux");
-  Serial.println(jsonData);
+  // Serial.println(jsonData);
 
-  delay(10000);  // Gửi dữ liệu mỗi 10 giây
+  for(int i = 0 ; i < 10 ; i ++){
+  delay(500);
+  client.loop();
+ }
+
+
+  // Gửi dữ liệu mỗi 60 giây
 }

@@ -12,7 +12,7 @@ CORS(app)  # Kích hoạt CORS
 
 
 def get_sensor_data():
-    conn = sqlite3.connect('iot.db')
+    conn = sqlite3.connect('G:/Coding/database/iot.db')
     cursor = conn.cursor()
 
     # Truy vấn để lấy giá trị mới nhất của mỗi cảm biến
@@ -49,7 +49,7 @@ def sensor_data():
 
 
 def get_chart_data():
-    conn = sqlite3.connect('iot.db')
+    conn = sqlite3.connect('G:/Coding/database/iot.db')
     cursor = conn.cursor()
 
     # Truy vấn để lấy 20 mẫu dữ liệu mới nhất của mỗi loại cảm biến
@@ -101,7 +101,7 @@ def chart_data():
 
 @app.route('/api/device-status', methods=['GET'])
 def get_device_status():
-    conn = sqlite3.connect('iot.db')
+    conn = sqlite3.connect('G:/Coding/database/iot.db')
     cursor = conn.cursor()
 
     cursor.execute(
@@ -122,7 +122,7 @@ def get_device_status():
 
 @app.route('/api/notifications', methods=['GET'])
 def get_notifications():
-    conn = sqlite3.connect('iot.db')
+    conn = sqlite3.connect('G:/Coding/database/iot.db')
     cursor = conn.cursor()
 
     cursor.execute(
@@ -134,11 +134,31 @@ def get_notifications():
 
     return jsonify(notifications)
 
+
+def add_notification(message):
+    conn = sqlite3.connect('G:/Coding/database/iot.db')
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO notification (message) VALUES (?)", (message,))
+    conn.commit()
+    conn.close()
+
+
+@app.route('/api/add-notification', methods=['POST'])
+def add_notification_route():
+    data = request.get_json()
+    message = data.get('message')
+
+    if message:
+        add_notification(message)
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False, 'error': 'No message provided'}), 400
+
 #------------------------------------Thong Ke-------------------------------------------
 
 @app.route('/api/sensors/all', methods=['GET'])
 def get_all_sensors_data():
-    conn = sqlite3.connect(r'iot.db')
+    conn = sqlite3.connect(r'G:/Coding/database/iot.db')
     cursor = conn.cursor()
 
     cursor.execute(
@@ -162,7 +182,7 @@ def get_all_sensors_data():
 #----------------------------------------Lich Su-----------------------------------------
 @app.route('/api/devices', methods=['GET'])
 def get_devices_data():
-    conn = sqlite3.connect('iot.db')
+    conn = sqlite3.connect('G:/Coding/database/iot.db')
     cursor = conn.cursor()
 
     cursor.execute(
@@ -190,7 +210,7 @@ def get_devices_data_filter():
         'filter', 'all')  # Giá trị mặc định là "all"
 
     # Kết nối tới cơ sở dữ liệu
-    conn = sqlite3.connect('iot.db')
+    conn = sqlite3.connect('G:/Coding/database/iot.db')
     cursor = conn.cursor()
 
     # Lấy thời gian hiện tại
@@ -260,7 +280,7 @@ def get_sensors_data_filter():
     search_query = request.args.get('search', '')
 
     # Kết nối tới cơ sở dữ liệu
-    conn = sqlite3.connect('iot.db')
+    conn = sqlite3.connect('G:/Coding/database/iot.db')
     cursor = conn.cursor()
 
     # Lấy thời gian hiện tại
@@ -333,6 +353,7 @@ mqtt_broker = "192.168.0.100"  # Địa chỉ IP của máy nhận MQTT
 mqtt_port = 1883
 mqtt_topic = "home/sensor/data"
 mqtt_topic_control = "home/device/control"  # Chủ đề điều khiển thiết bị
+mqtt_topic_status = "home/device/status"  # Chủ đề cập nhật trạng thái thiết bị
 
 # Hàm callback khi có tin nhắn từ MQTT
 
@@ -341,36 +362,60 @@ def on_message(client, userdata, message):
     try:
         print(f"Received message: {message.payload.decode()}")
 
-        # Dữ liệu từ ESP32 thường là chuỗi JSON
-        payload = json.loads(message.payload.decode())
-        temperature = payload.get('temperature')
-        humidity = payload.get('humidity')
-        light = payload.get('light')  # Lấy giá trị ánh sáng từ payload
+        # Kiểm tra nếu tin nhắn đến từ topic cảm biến hoặc topic trạng thái thiết bị
+        if message.topic == mqtt_topic:
+            # Dữ liệu từ ESP32 thường là chuỗi JSON về cảm biến
+            payload = json.loads(message.payload.decode())
+            temperature = payload.get('temperature')
+            humidity = payload.get('humidity')
+            light = payload.get('light')  # Lấy giá trị ánh sáng từ payload
 
-        # Lưu vào cơ sở dữ liệu
-        conn = sqlite3.connect('iot.db')
-        cursor = conn.cursor()
+            # Lưu vào cơ sở dữ liệu
+            conn = sqlite3.connect('G:/Coding/database/iot.db')
+            cursor = conn.cursor()
 
-        # Lưu giá trị temperature
-        if temperature is not None:
-            cursor.execute(
-                "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('temperature', temperature))
+            # Lưu giá trị temperature
+            if temperature is not None:
+                cursor.execute(
+                    "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('temperature', temperature))
 
-        # Lưu giá trị humidity
-        if humidity is not None:
-            cursor.execute(
-                "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('humidity', humidity))
+            # Lưu giá trị humidity
+            if humidity is not None:
+                cursor.execute(
+                    "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('humidity', humidity))
 
-        # Lưu giá trị light
-        if light is not None:
-            cursor.execute(
-                "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('light', light))
+            # Lưu giá trị light
+            if light is not None:
+                cursor.execute(
+                    "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('light', light))
 
-        # Commit và đóng kết nối
-        conn.commit()
-        conn.close()
+            # Commit và đóng kết nối
+            conn.commit()
+            conn.close()
 
-        print("Dữ liệu đã được lưu vào cơ sở dữ liệu")
+            print("Dữ liệu cảm biến đã được lưu vào cơ sở dữ liệu")
+
+        elif message.topic == mqtt_topic_status:
+            # Xử lý JSON cập nhật trạng thái thiết bị
+            payload = json.loads(message.payload.decode())
+            device = payload.get('device')
+            status = payload.get('status')
+
+            # Lưu trạng thái thiết bị vào cơ sở dữ liệu
+            conn = sqlite3.connect('G:/Coding/database/iot.db')
+            cursor = conn.cursor()
+
+            # Lưu thông tin trạng thái của thiết bị
+            if device is not None and status is not None:
+                cursor.execute(
+                    "INSERT INTO devices (device_name, status) VALUES (?, ?)", (device, status))
+
+            # Commit và đóng kết nối
+            conn.commit()
+            conn.close()
+
+            print(f"Trạng thái thiết bị {device} đã được cập nhật thành {status}")
+
     except Exception as e:
         print(f"Error while processing message: {e}")
 
@@ -383,7 +428,10 @@ mqtt_client.on_message = on_message
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Kết nối thành công đến MQTT broker")
-        client.subscribe(mqtt_topic)  # Đăng ký lắng nghe chủ đề cần thiết
+        # Đăng ký lắng nghe chủ đề dữ liệu cảm biến
+        client.subscribe(mqtt_topic)
+        # Đăng ký lắng nghe chủ đề trạng thái thiết bị
+        client.subscribe(mqtt_topic_status)
     else:
         print(f"Kết nối thất bại với mã lỗi: {rc}")
 
@@ -422,6 +470,8 @@ if __name__ == '__main__':
 
     # Subscribe vào chủ đề từ ESP32
     mqtt_client.subscribe(mqtt_topic)
+    # Đăng ký lắng nghe topic trạng thái thiết bị
+    mqtt_client.subscribe(mqtt_topic_status)
 
     # Bắt đầu vòng lặp MQTT để nhận dữ liệu liên tục
     mqtt_client.loop_start()

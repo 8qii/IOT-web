@@ -1,10 +1,15 @@
-// Hàm cập nhật dữ liệu từ API sensor_data
 function fetchSensorData() {
     fetch('http://127.0.0.1:5000/api/sensor_data')
         .then(response => response.json())
         .then(data => {
             if (!data.error) {
                 updateSensorData(data.temperature, data.humidity, data.light);
+
+                // Kiểm tra các điều kiện sau khi cập nhật dữ liệu cảm biến
+                //checkConditions(data.temperature, data.humidity, data.light);
+
+                // Cập nhật lại biểu đồ sau khi cập nhật dữ liệu cảm biến
+                updateChartData(data.temperature, data.humidity, data.light);
             } else {
                 console.error(data.error);
             }
@@ -12,11 +17,135 @@ function fetchSensorData() {
         .catch(error => console.error('Error fetching sensor data:', error));
 }
 
-// Hàm cập nhật dữ liệu cảm biến
+// Hàm cập nhật dữ liệu biểu đồ
+function updateChartData(newTemperature, newHumidity, newLight) {
+    // Cập nhật dữ liệu cho các dataset của biểu đồ
+    const chart = Chart.getChart('myChart'); // Lấy đối tượng biểu đồ bằng id 'myChart'
+    if (chart) {
+        chart.data.datasets[0].data.push(newTemperature);
+        chart.data.datasets[1].data.push(newHumidity);
+        chart.data.datasets[2].data.push(newLight);
+
+        // Xóa các giá trị cũ nếu vượt quá giới hạn (ví dụ: chỉ giữ 15 giá trị cuối cùng)
+        if (chart.data.datasets[0].data.length > 15) {
+            chart.data.datasets[0].data.shift();
+            chart.data.datasets[1].data.shift();
+            chart.data.datasets[2].data.shift();
+        }
+
+        // Cập nhật lại biểu đồ
+        chart.update();
+    }
+}
+
+// Biến để theo dõi thiết bị nào được bật
+let deviceToToggle = null;
+
+// Hàm để hiển thị thông báo với hiệu ứng
+// function showNotification(message, device) {
+//     const notification = document.getElementById('notification');
+//     const notificationMessage = document.getElementById('notificationMessage');
+//     const toggleIcon = document.getElementById('toggleIcon');
+
+//     notificationMessage.textContent = message;
+//     notification.style.opacity = 0;
+//     notification.style.visibility = 'visible';
+
+//     // Đặt thiết bị nào cần bật
+//     deviceToToggle = device; // Lưu thiết bị vào biến
+
+//     // Khởi động hiệu ứng fade-in
+//     setTimeout(() => {
+//         notification.style.opacity = 1;
+//     }, 50);
+
+//     // Tự động ẩn thông báo sau 3 giây
+//     setTimeout(() => {
+//         notification.style.opacity = 0;
+//         setTimeout(() => {
+//             notification.style.visibility = 'hidden';
+//         }, 500);
+//     }, 3000);
+
+//     // Thêm sự kiện nhấp cho biểu tượng
+//     toggleIcon.onclick = function () {
+//         toggleDevice(deviceToToggle); // Gọi hàm toggleDevice khi nhấp
+//     };
+// }
+
+
+// // Hàm để bật/ tắt thiết bị
+// function toggleDevice(device) {
+//     switch (device) {
+//         case 'air_conditioner':
+//             controlDevice("ac", "on");
+//             break;
+//         case 'fan':
+//             controlDevice("fan", "on");
+//             break;
+//         case 'light':
+//             controlDevice("light", "on");
+//             break; 
+//         default:
+//             console.log("Không xác định thiết bị");
+//     }
+// }
+
+// // Hàm kiểm tra điều kiện và hiển thị thông báo tương ứng
+// function checkConditions(temperature, humidity, light) {
+//     if (temperature > 35) {
+//         showNotification("Nhiệt độ cao! Bạn có muốn bật điều hòa không?", 'air_conditioner');
+//     }
+
+//     if (humidity > 85) {
+//         showNotification("Độ ẩm cao! Bạn có muốn bật quạt không?", 'fan');
+//     }
+
+//     if (light < 1000) {
+//         showNotification("Ánh sáng yếu! Bạn có muốn bật đèn không?", 'light');
+//     }
+// }
+
 function updateSensorData(temperature, humidity, light) {
     document.getElementById('temperature').textContent = temperature !== null ? `${temperature}°C` : '--';
     document.getElementById('humidity').textContent = humidity !== null ? `${humidity}%` : '--';
     document.getElementById('light').textContent = light !== null ? `${light} lux` : '--';
+}
+
+function controlDevice(device, status) {
+    // Gửi yêu cầu điều khiển thiết bị
+    fetch('http://127.0.0.1:5000/api/control-device', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            device: device,
+            status: status
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(`${device} is now ${status}`);
+                const switchElement = document.querySelector(`[data-device="${device}"]`);
+                const iconElement = document.getElementById(`${device}-icon`);
+
+                // Cập nhật hình ảnh thiết bị
+                if (device === 'light') {
+                    updateDeviceIcon(switchElement, iconElement, 'img/lightOn.png', 'img/lightOff.png');
+                } else if (device === 'fan') {
+                    updateDeviceIcon(switchElement, iconElement, 'img/fanOn.png', 'img/fanOff.png');
+                } else if (device === 'ac') {
+                    updateDeviceIcon(switchElement, iconElement, 'img/condOn.png', 'img/condOff.png');
+                }
+
+                // Cập nhật trạng thái thiết bị
+                deviceStatus[device] = status;
+            } else {
+                console.error('Error updating device');
+            }
+        });
 }
 
 // Hàm cập nhật thời gian hiện tại
@@ -85,6 +214,10 @@ document.querySelectorAll('.switch input').forEach((switchElement) => {
         const device = this.getAttribute('data-device');
         const status = this.checked ? 'on' : 'off';
 
+        // Tắt hoạt ảnh ngay khi bấm công tắc
+        const switchElement = this.closest('.switch');
+        switchElement.classList.add('no-transition');
+
         // Gửi yêu cầu AJAX đến Flask server
         fetch('http://127.0.0.1:5000/api/control-device', {
             method: 'POST',
@@ -108,7 +241,6 @@ document.querySelectorAll('.switch input').forEach((switchElement) => {
     });
 });
 
-
 // Hàm khởi tạo biểu đồ chính
 function initializeChart() {
     fetch("http://127.0.0.1:5000/api/chart_data")
@@ -121,10 +253,10 @@ function initializeChart() {
             const ctx = document.getElementById('myChart').getContext('2d');
             // Cấu hình nhãn trục x
             const xAxisLabels = Array.from({ length: data.length }, (_, i) => {
-                if (i === 0) return 'Hiện tại';
-                if (i === 5) return '5';
-                if (i === 10) return '10';
-                if (i === 15) return '15';
+                if (i === 4) return '15';
+                if (i === 9) return '10';
+                if (i === 14) return '5';
+                if (i === 19) return 'Hiện tại';
                 return '';
             });
             new Chart(ctx, {
@@ -201,10 +333,10 @@ function initializeDetailedCharts() {
 
             // Cấu hình nhãn trục x
             const xAxisLabels = Array.from({ length: data.length }, (_, i) => {
-                if (i === 0) return 'Hiện tại';
-                if (i === 5) return '5';
-                if (i === 10) return '10';
-                if (i === 15) return '15';
+                if (i === 4) return '15';
+                if (i === 9) return '10';
+                if (i === 14) return '5';
+                if (i === 19) return 'Hiện tại';
                 return '';
             });
 
@@ -353,9 +485,9 @@ function updateCardColors() {
     const humidity = parseFloat(document.getElementById('humidity').textContent);
     const light = parseFloat(document.getElementById('light').textContent);
 
-    updateCardColor('temperature', temperature, [15, 30, 40], 'temperature');
+    updateCardColor('temperature', temperature, [15, 25, 40], 'temperature');
     updateCardColor('humidity', humidity, [30, 70, 80], 'humidity');
-    updateCardColor('light', light, [200, 700, 1000], 'light');
+    updateCardColor('light', light, [1000, 3000, 5000], 'light');
 }
 
 function updateCardColor(id, value, thresholds, type) {
@@ -404,7 +536,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Tự động cập nhật dữ liệu cảm biến mỗi 60 giây
-setInterval(fetchSensorData, 60000);
+setInterval(fetchSensorData, 5000);
 
 document.addEventListener("DOMContentLoaded", function () {
     // Lấy các phần tử switch và ảnh tương ứng
@@ -438,3 +570,13 @@ document.addEventListener("DOMContentLoaded", function () {
         updateDeviceIcon(acSwitch, acIcon, 'img/condOn.png', 'img/condOff.png');
     });
 });
+
+
+// Hàm để khởi động cập nhật tự động mỗi giây
+function startAutoUpdate() {
+    fetchDeviceStatus(); // Lần đầu tiên lấy trạng thái thiết bị
+    setInterval(fetchDeviceStatus, 500); // Cập nhật mỗi 5 giây
+}
+
+// Khởi động tự động cập nhật khi trang web được tải
+window.onload = startAutoUpdate;

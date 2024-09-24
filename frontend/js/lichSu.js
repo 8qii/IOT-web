@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'ac':
                 return 'Điều hòa';
             case 'fan':
-                return 'Quạt thông gió';
+                return 'Quạt';
             default:
                 return deviceName;
         }
