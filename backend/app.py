@@ -349,7 +349,7 @@ def get_sensors_data_filter():
 
 # -------------------------MQTT---------------------------------------------
 # Cấu hình MQTT
-mqtt_broker = "192.168.0.100"  # Địa chỉ IP của máy nhận MQTT
+mqtt_broker = "172.20.10.3"  # Địa chỉ IP của máy nhận MQTT
 mqtt_port = 1883
 mqtt_topic = "home/sensor/data"
 mqtt_topic_control = "home/device/control"  # Chủ đề điều khiển thiết bị

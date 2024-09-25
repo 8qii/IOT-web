@@ -14,11 +14,11 @@ DHT dht(dhtpin, dhttype);
 #define LIGHT_PIN 2   // LED đại diện cho đèn
 
 // Thông tin mạng WiFi
-const char* ssid = "TP-Link_CFEA";
-const char* password = "18248760";
+const char* ssid = "Hqii";
+const char* password = "0123456789";
 
 // MQTT Server
-const char* mqtt_server = "192.168.0.100";  // Địa chỉ IP của máy nhận MQTT
+const char* mqtt_server = "172.20.10.3";  // Địa chỉ IP của máy nhận MQTT
 const int mqtt_port = 1883;
 const char* mqtt_sensor_topic = "home/sensor/data";  // Topic để gửi dữ liệu cảm biến
 const char* mqtt_control_topic = "home/device/control";  // Topic để nhận lệnh điều khiển

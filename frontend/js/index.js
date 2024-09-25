@@ -6,7 +6,7 @@ function fetchSensorData() {
                 updateSensorData(data.temperature, data.humidity, data.light);
 
                 // Kiểm tra các điều kiện sau khi cập nhật dữ liệu cảm biến
-                //checkConditions(data.temperature, data.humidity, data.light);
+                checkConditions(data.temperature, data.humidity, data.light);
 
                 // Cập nhật lại biểu đồ sau khi cập nhật dữ liệu cảm biến
                 updateChartData(data.temperature, data.humidity, data.light);
@@ -42,69 +42,79 @@ function updateChartData(newTemperature, newHumidity, newLight) {
 let deviceToToggle = null;
 
 // Hàm để hiển thị thông báo với hiệu ứng
-// function showNotification(message, device) {
-//     const notification = document.getElementById('notification');
-//     const notificationMessage = document.getElementById('notificationMessage');
-//     const toggleIcon = document.getElementById('toggleIcon');
+function showNotification(message, device) {
+    const notification = document.getElementById('notification');
+    const notificationMessage = document.getElementById('notificationMessage');
+    const toggleIcon = document.getElementById('toggleIcon');
 
-//     notificationMessage.textContent = message;
-//     notification.style.opacity = 0;
-//     notification.style.visibility = 'visible';
+    notificationMessage.textContent = message;
+    notification.style.opacity = 0;
+    notification.style.visibility = 'visible';
 
-//     // Đặt thiết bị nào cần bật
-//     deviceToToggle = device; // Lưu thiết bị vào biến
+    // Đặt thiết bị nào cần bật
+    deviceToToggle = device; // Lưu thiết bị vào biến
 
-//     // Khởi động hiệu ứng fade-in
-//     setTimeout(() => {
-//         notification.style.opacity = 1;
-//     }, 50);
+    // Khởi động hiệu ứng fade-in
+    setTimeout(() => {
+        notification.style.opacity = 1;
+    }, 50);
 
-//     // Tự động ẩn thông báo sau 3 giây
-//     setTimeout(() => {
-//         notification.style.opacity = 0;
-//         setTimeout(() => {
-//             notification.style.visibility = 'hidden';
-//         }, 500);
-//     }, 3000);
+    // Tự động ẩn thông báo sau 3 giây
+    setTimeout(() => {
+        notification.style.opacity = 0;
+        setTimeout(() => {
+            notification.style.visibility = 'hidden';
+        }, 500);
+    }, 3000);
 
-//     // Thêm sự kiện nhấp cho biểu tượng
-//     toggleIcon.onclick = function () {
-//         toggleDevice(deviceToToggle); // Gọi hàm toggleDevice khi nhấp
-//     };
-// }
+    // Thêm sự kiện nhấp cho biểu tượng
+    toggleIcon.onclick = function () {
+        toggleDevice(deviceToToggle); // Gọi hàm toggleDevice khi nhấp
+    };
+}
 
 
-// // Hàm để bật/ tắt thiết bị
-// function toggleDevice(device) {
-//     switch (device) {
-//         case 'air_conditioner':
-//             controlDevice("ac", "on");
-//             break;
-//         case 'fan':
-//             controlDevice("fan", "on");
-//             break;
-//         case 'light':
-//             controlDevice("light", "on");
-//             break; 
-//         default:
-//             console.log("Không xác định thiết bị");
-//     }
-// }
+// Hàm để bật/ tắt thiết bị (chuyển trạng thái công tắc)
+function toggleDevice(device) {
+    switch (device) {
+        case 'air_conditioner':
+            // Chuyển đổi trạng thái công tắc điều hòa
+            const acSwitch = document.getElementById('ac-switch');
+            acSwitch.checked = true; // Bật công tắc điều hòa
+            controlDevice("ac", "on");
+            break;
+        case 'fan':
+            // Chuyển đổi trạng thái công tắc quạt
+            const fanSwitch = document.getElementById('fan-switch');
+            fanSwitch.checked = true; // Bật công tắc quạt
+            controlDevice("fan", "on");
+            break;
+        case 'light':
+            // Chuyển đổi trạng thái công tắc đèn
+            const lightSwitch = document.getElementById('light-switch');
+            lightSwitch.checked = true; // Bật công tắc đèn
+            controlDevice("light", "on");
+            break;
+        default:
+            console.log("Không xác định thiết bị");
+    }
+}
 
-// // Hàm kiểm tra điều kiện và hiển thị thông báo tương ứng
-// function checkConditions(temperature, humidity, light) {
-//     if (temperature > 35) {
-//         showNotification("Nhiệt độ cao! Bạn có muốn bật điều hòa không?", 'air_conditioner');
-//     }
+// Hàm kiểm tra điều kiện và hiển thị thông báo tương ứng
+function checkConditions(temperature, humidity, light) {
+    const lightSwitch = document.getElementById('light-switch'); 
+    if (temperature > 35) {
+        showNotification("Nhiệt độ cao! Bạn có muốn bật điều hòa không?", 'air_conditioner');
+    }
 
-//     if (humidity > 85) {
-//         showNotification("Độ ẩm cao! Bạn có muốn bật quạt không?", 'fan');
-//     }
+    if (humidity > 85) {
+        showNotification("Độ ẩm cao! Bạn có muốn bật quạt không?", 'fan');
+    }
 
-//     if (light < 1000) {
-//         showNotification("Ánh sáng yếu! Bạn có muốn bật đèn không?", 'light');
-//     }
-// }
+    if (light < 1000 && !lightSwitch.checked) {
+        showNotification("Ánh sáng yếu! Bạn có muốn bật đèn không?", 'light');
+    }
+}
 
 function updateSensorData(temperature, humidity, light) {
     document.getElementById('temperature').textContent = temperature !== null ? `${temperature}°C` : '--';
@@ -140,13 +150,51 @@ function controlDevice(device, status) {
                     updateDeviceIcon(switchElement, iconElement, 'img/condOn.png', 'img/condOff.png');
                 }
 
-                // Cập nhật trạng thái thiết bị
-                deviceStatus[device] = status;
+
+                // Gửi thông báo sau khi cập nhật thành công
+                let message = "";
+                switch (device) {
+                    case 'light':
+                        message = status === 'on' ? "Đèn đã được bật" : "Đèn đã được tắt";
+                        break;
+                    case 'fan':
+                        message = status === 'on' ? "Quạt đã được bật" : "Quạt đã được tắt";
+                        break;
+                    case 'ac':
+                        message = status === 'on' ? "Điều hòa đã được bật" : "Điều hòa đã được tắt";
+                        break;
+                }
+
+                sendNotification(message);  // Gọi hàm để gửi thông báo
+
             } else {
                 console.error('Error updating device');
             }
         });
 }
+
+// Hàm gửi thông báo qua API
+function sendNotification(message) {
+    fetch('http://127.0.0.1:5000/api/add-notification', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: message })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("Thông báo đã được gửi: " + message);
+            } else {
+                console.error("Lỗi khi gửi thông báo: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("Lỗi kết nối khi gửi thông báo:", error);
+        });
+}
+
 
 // Hàm cập nhật thời gian hiện tại
 function updateTime() {
@@ -234,6 +282,24 @@ document.querySelectorAll('.switch input').forEach((switchElement) => {
                 if (data.success) {
                     console.log(`${device} is now ${status}`);
                     updateDeviceIcon(device, status); // Cập nhật hình ảnh thiết bị sau khi nhận phản hồi thành công
+                    // Gửi thông báo khi thiết bị được bật/tắt
+                    let message = "";
+                    switch (device) {
+                        case 'light':
+                            message = status === 'on' ? "Đèn đã được bật" : "Đèn đã được tắt";
+                            break;
+                        case 'fan':
+                            message = status === 'on' ? "Quạt đã được bật" : "Quạt đã được tắt";
+                            break;
+                        case 'ac':
+                            message = status === 'on' ? "Điều hòa đã được bật" : "Điều hòa đã được tắt";
+                            break;
+                        default:
+                            message = "Thiết bị không xác định";
+                    }
+
+                    // Gọi API gửi thông báo
+                    sendNotification(message);
                 } else {
                     console.error('Error updating device');
                 }
