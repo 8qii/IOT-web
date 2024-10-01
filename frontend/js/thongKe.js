@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
-    let rowsPerPage = 10;  // Biến toàn cục, không cần khai báo lại bên trong sự kiện
+    let rowsPerPage = 10;
     let currentPage = 1;
     let data = [];
-    let filteredData = []; // Dữ liệu sau khi tìm kiếm
-    let sortDirection = {}; // Trạng thái sắp xếp cho từng cột
+    let filteredData = [];
+    let sortDirection = {};
 
     async function fetchData() {
         const filter = document.getElementById('filterSelect').value;
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw new Error('Network response was not ok');
             }
             data = await response.json();
-            filteredData = data; // Cập nhật dữ liệu đã lọc
+            filteredData = data;
             displayData();
             setupPagination();
         } catch (error) {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         paginationContainer.appendChild(prevButton);
 
-        const range = 2; // Số trang trước và sau trang hiện tại sẽ được hiển thị
+        const range = 2;
         let start = Math.max(currentPage - range, 1);
         let end = Math.min(currentPage + range, totalPages);
 
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (start > 2) {
                 const ellipsis = document.createElement('span');
                 ellipsis.textContent = '...';
-                ellipsis.className = 'ellipsis'; // Thêm class cho dấu ...
+                ellipsis.className = 'ellipsis';
                 paginationContainer.appendChild(ellipsis);
             }
         }
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (end < totalPages - 1) {
                 const ellipsis = document.createElement('span');
                 ellipsis.textContent = '...';
-                ellipsis.className = 'ellipsis'; // Thêm class cho dấu ...
+                ellipsis.className = 'ellipsis';
                 paginationContainer.appendChild(ellipsis);
             }
             paginationContainer.appendChild(createPageButton(totalPages));
@@ -122,14 +122,21 @@ document.addEventListener('DOMContentLoaded', function () {
         return button;
     }
 
-
     function filterData() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const searchTerm = document.getElementById('searchInput').value;
+        const searchType = document.getElementById('searchTypeSelect').value; // Lấy giá trị từ dropdown
         const sensorFilter = document.getElementById('sensorFilterSelect').value;
 
         filteredData = data.filter(item => {
-            const matchesSearch = item.time.toLowerCase().includes(searchTerm);
             const matchesSensor = sensorFilter === 'all' || item.sensor === sensorFilter;
+
+            let matchesSearch = false;
+            if (searchType === 'time') {
+                matchesSearch = item.time.toLowerCase().includes(searchTerm.toLowerCase());
+            } else if (searchType === 'sensor') {
+                matchesSearch = item.value === parseFloat(searchTerm); // So sánh giá trị của sensor
+            }
+
             return matchesSearch && matchesSensor;
         });
 
@@ -148,12 +155,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return 0;
         });
 
-        // Xóa lớp sắp xếp khỏi tất cả các cột
         document.querySelectorAll('th.sortable').forEach(header => {
             header.classList.remove('asc', 'desc');
         });
 
-        // Thêm lớp sắp xếp vào cột hiện tại
         const header = document.querySelector(`th[data-sort="${column}"]`);
         header.classList.add(direction);
 
@@ -161,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.getElementById('searchInput').addEventListener('input', filterData);
-
     document.getElementById('sensorFilterSelect').addEventListener('change', filterData);
 
     const headers = document.querySelectorAll('#dataTable thead th');
@@ -173,16 +177,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('entriesSelect').addEventListener('change', function () {
-        rowsPerPage = parseInt(this.value); // Cập nhật giá trị toàn cục
-        currentPage = 1; // Reset lại trang
+        rowsPerPage = parseInt(this.value);
+        currentPage = 1;
         displayData();
         setupPagination();
     });
 
     document.getElementById('filterSelect').addEventListener('change', function () {
-        fetchData(); // Fetch lại dữ liệu với bộ lọc đã chọn
+        fetchData();
     });
 
-    // Fetch dữ liệu mặc định khi tải trang
     fetchData();
 });

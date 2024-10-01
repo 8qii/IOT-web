@@ -102,12 +102,14 @@ function toggleDevice(device) {
 
 // Hàm kiểm tra điều kiện và hiển thị thông báo tương ứng
 function checkConditions(temperature, humidity, light) {
-    const lightSwitch = document.getElementById('light-switch'); 
-    if (temperature > 35) {
+    const lightSwitch = document.getElementById('light-switch');
+    const fanSwitch = document.getElementById('fan-switch');
+    const acSwitch = document.getElementById('ac-switch');
+    if (temperature > 35 && !acSwitch.checked) {
         showNotification("Nhiệt độ cao! Bạn có muốn bật điều hòa không?", 'air_conditioner');
     }
 
-    if (humidity > 85) {
+    if (humidity > 85 && !fanSwitch.checked) {
         showNotification("Độ ẩm cao! Bạn có muốn bật quạt không?", 'fan');
     }
 
@@ -143,11 +145,11 @@ function controlDevice(device, status) {
 
                 // Cập nhật hình ảnh thiết bị
                 if (device === 'light') {
-                    updateDeviceIcon(switchElement, iconElement, 'img/lightOn.png', 'img/lightOff.png');
+                    updateDeviceIcon(switchElement, iconElement, 'img/lightOn.gif', 'img/lightOff.png');
                 } else if (device === 'fan') {
-                    updateDeviceIcon(switchElement, iconElement, 'img/fanOn.png', 'img/fanOff.png');
+                    updateDeviceIcon(switchElement, iconElement, 'img/fanOn.gif', 'img/fanOff.png');
                 } else if (device === 'ac') {
-                    updateDeviceIcon(switchElement, iconElement, 'img/condOn.png', 'img/condOff.png');
+                    updateDeviceIcon(switchElement, iconElement, 'img/condOn.gif', 'img/condOff.png');
                 }
 
 
@@ -226,35 +228,35 @@ function updateDeviceIcon(switchElement, iconElement, imgOn, imgOff) {
     }
 }
 
-// Hàm đồng bộ trạng thái thiết bị
-function syncDeviceStatus() {
-    fetch('http://127.0.0.1:5000/api/device-status')
-        .then(response => response.json())
-        .then(data => {
-            const switches = document.querySelectorAll('.deviceControl .switch input');
+// // Hàm đồng bộ trạng thái thiết bị
+// function syncDeviceStatus() {
+//     fetch('http://127.0.0.1:5000/api/device-status')
+//         .then(response => response.json())
+//         .then(data => {
+//             const switches = document.querySelectorAll('.deviceControl .switch input');
 
-            switches.forEach(switchElement => {
-                const deviceName = switchElement.getAttribute('data-device');
-                if (deviceName && data[deviceName]) {
-                    switchElement.checked = data[deviceName] === 'on';
+//             switches.forEach(switchElement => {
+//                 const deviceName = switchElement.getAttribute('data-device');
+//                 if (deviceName && data[deviceName]) {
+//                     switchElement.checked = data[deviceName] === 'on';
 
-                    // Cập nhật hình ảnh tương ứng với trạng thái
-                    const iconElement = document.getElementById(`${deviceName}-icon`);
-                    if (deviceName === 'light') {
-                        updateDeviceIcon(switchElement, iconElement, 'img/lightOn.png', 'img/lightOff.png');
-                    } else if (deviceName === 'fan') {
-                        updateDeviceIcon(switchElement, iconElement, 'img/fanOn.png', 'img/fanOff.png');
-                    } else if (deviceName === 'ac') {
-                        updateDeviceIcon(switchElement, iconElement, 'img/condOn.png', 'img/condOff.png');
-                    }
-                }
-            });
-        })
-        .catch(error => console.error('Error fetching device status:', error));
-}
+//                     // Cập nhật hình ảnh tương ứng với trạng thái
+//                     const iconElement = document.getElementById(`${deviceName}-icon`);
+//                     if (deviceName === 'light') {
+//                         updateDeviceIcon(switchElement, iconElement, 'img/lightOn.gif', 'img/lightOff.png');
+//                     } else if (deviceName === 'fan') {
+//                         updateDeviceIcon(switchElement, iconElement, 'img/fanOn.gif', 'img/fanOff.png');
+//                     } else if (deviceName === 'ac') {
+//                         updateDeviceIcon(switchElement, iconElement, 'img/condOn.gif', 'img/condOff.png');
+//                     }
+//                 }
+//             });
+//         })
+//         .catch(error => console.error('Error fetching device status:', error));
+// }
 
 // Gọi hàm đồng bộ trạng thái khi trang được tải
-document.addEventListener('DOMContentLoaded', syncDeviceStatus);
+//document.addEventListener('DOMContentLoaded', syncDeviceStatus);
 
 // Hàm thêm sự kiện cho các nút bật/tắt thiết bị
 document.querySelectorAll('.switch input').forEach((switchElement) => {
@@ -580,7 +582,7 @@ setInterval(() => {
 
 document.addEventListener("DOMContentLoaded", function () {
     fetchSensorData();
-    syncDeviceStatus();
+    //syncDeviceStatus();
     initializeChart();
     startUpdatingTime(); // Bắt đầu cập nhật thời gian thực
 
@@ -625,15 +627,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Thêm sự kiện cho từng switch
     lightSwitch.addEventListener('change', function () {
-        updateDeviceIcon(lightSwitch, lightIcon, 'img/lightOn.png', 'img/lightOff.png');
+        updateDeviceIcon(lightSwitch, lightIcon, 'img/lightOn.gif', 'img/lightOff.png');
     });
 
     fanSwitch.addEventListener('change', function () {
-        updateDeviceIcon(fanSwitch, fanIcon, 'img/fanOn.png', 'img/fanOff.png');
+        updateDeviceIcon(fanSwitch, fanIcon, 'img/fanOn.gif', 'img/fanOff.png');
     });
 
     acSwitch.addEventListener('change', function () {
-        updateDeviceIcon(acSwitch, acIcon, 'img/condOn.png', 'img/condOff.png');
+        updateDeviceIcon(acSwitch, acIcon, 'img/condOn.gif', 'img/condOff.png');
     });
 });
 

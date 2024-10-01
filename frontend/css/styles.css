@@ -159,49 +159,6 @@
     border-radius: 50%;
 }
 
-/* CSS cho hoạt ảnh loading */
-.switch .loading-icon {
-    display: none;
-    /* Ban đầu ẩn */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    /* Đặt biểu tượng ở giữa */
-    border: 2px solid #f3f3f3;
-    /* Vùng sáng */
-    border-top: 2px solid #3498db;
-    /* Vùng xoay */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    /* Tạo hiệu ứng xoay vòng */
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Hiển thị biểu tượng loading khi đang chờ phản hồi */
-.switch input.waiting+.slider:before {
-    content: '';
-    /* Hiển thị biểu tượng loading thay vì nút */
-    background-color: transparent;
-    /* Ẩn nút tròn */
-}
-
-.switch input.waiting+.slider .loading-icon {
-    display: block;
-    /* Hiển thị hoạt ảnh khi chờ */
-}
-
 input:checked+.slider {
     background-color: #2196F3;
 }

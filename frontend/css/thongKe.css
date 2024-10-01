@@ -136,7 +136,7 @@ tbody td {
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 20px;
-    width: 250px;
+    width: 200px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -236,4 +236,20 @@ th.sortable.desc .sort-arrow.asc {
 .filter-controls select:focus {
     border-color: #007bff;
     outline: none;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    /* Căn giữa các phần tử theo chiều dọc */
+}
+
+.search-bar input {
+    margin-right: 10px;
+    /* Khoảng cách giữa ô tìm kiếm và dropdown */
+}
+
+.search-bar select {
+    padding: 5px;
+    /* Khoảng cách bên trong cho dropdown */
 }

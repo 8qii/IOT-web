@@ -350,10 +350,13 @@ def get_sensors_data_filter():
 # -------------------------MQTT---------------------------------------------
 # Cấu hình MQTT
 mqtt_broker = "172.20.10.3"  # Địa chỉ IP của máy nhận MQTT
-mqtt_port = 1883
+mqtt_port = 1884
 mqtt_topic = "home/sensor/data"
 mqtt_topic_control = "home/device/control"  # Chủ đề điều khiển thiết bị
 mqtt_topic_status = "home/device/status"  # Chủ đề cập nhật trạng thái thiết bị
+
+mqtt_user = "quan"  # Username cho MQTT
+mqtt_password = "b21dccn606"  # Password cho MQTT
 
 # Hàm callback khi có tin nhắn từ MQTT
 
@@ -362,55 +365,42 @@ def on_message(client, userdata, message):
     try:
         print(f"Received message: {message.payload.decode()}")
 
-        # Kiểm tra nếu tin nhắn đến từ topic cảm biến hoặc topic trạng thái thiết bị
         if message.topic == mqtt_topic:
-            # Dữ liệu từ ESP32 thường là chuỗi JSON về cảm biến
             payload = json.loads(message.payload.decode())
             temperature = payload.get('temperature')
             humidity = payload.get('humidity')
-            light = payload.get('light')  # Lấy giá trị ánh sáng từ payload
+            light = payload.get('light')
 
-            # Lưu vào cơ sở dữ liệu
             conn = sqlite3.connect('G:/Coding/database/iot.db')
             cursor = conn.cursor()
 
-            # Lưu giá trị temperature
             if temperature is not None:
                 cursor.execute(
                     "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('temperature', temperature))
-
-            # Lưu giá trị humidity
             if humidity is not None:
                 cursor.execute(
                     "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('humidity', humidity))
-
-            # Lưu giá trị light
             if light is not None:
                 cursor.execute(
                     "INSERT INTO sensors (sensor, value) VALUES (?, ?)", ('light', light))
 
-            # Commit và đóng kết nối
             conn.commit()
             conn.close()
 
             print("Dữ liệu cảm biến đã được lưu vào cơ sở dữ liệu")
 
         elif message.topic == mqtt_topic_status:
-            # Xử lý JSON cập nhật trạng thái thiết bị
             payload = json.loads(message.payload.decode())
             device = payload.get('device')
             status = payload.get('status')
 
-            # Lưu trạng thái thiết bị vào cơ sở dữ liệu
             conn = sqlite3.connect('G:/Coding/database/iot.db')
             cursor = conn.cursor()
 
-            # Lưu thông tin trạng thái của thiết bị
             if device is not None and status is not None:
                 cursor.execute(
                     "INSERT INTO devices (device_name, status) VALUES (?, ?)", (device, status))
 
-            # Commit và đóng kết nối
             conn.commit()
             conn.close()
 
@@ -424,13 +414,14 @@ def on_message(client, userdata, message):
 mqtt_client = mqtt.Client()
 mqtt_client.on_message = on_message
 
+# Thêm thông tin đăng nhập MQTT
+mqtt_client.username_pw_set(mqtt_user, mqtt_password)
+
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Kết nối thành công đến MQTT broker")
-        # Đăng ký lắng nghe chủ đề dữ liệu cảm biến
         client.subscribe(mqtt_topic)
-        # Đăng ký lắng nghe chủ đề trạng thái thiết bị
         client.subscribe(mqtt_topic_status)
     else:
         print(f"Kết nối thất bại với mã lỗi: {rc}")
@@ -451,7 +442,6 @@ def control_device():
         if not device or not status:
             return jsonify({'success': False, 'message': 'Thiếu thông tin thiết bị hoặc trạng thái'})
 
-        # Gửi lệnh điều khiển đến ESP32 qua MQTT
         mqtt_payload = json.dumps({
             'device': device,
             'status': status
@@ -465,16 +455,9 @@ def control_device():
 
 # Chạy Flask server
 if __name__ == '__main__':
-    # Kết nối đến MQTT broker
     mqtt_client.connect(mqtt_broker, mqtt_port)
-
-    # Subscribe vào chủ đề từ ESP32
     mqtt_client.subscribe(mqtt_topic)
-    # Đăng ký lắng nghe topic trạng thái thiết bị
     mqtt_client.subscribe(mqtt_topic_status)
 
-    # Bắt đầu vòng lặp MQTT để nhận dữ liệu liên tục
     mqtt_client.loop_start()
-
-    # Khởi động Flask server
     app.run(debug=True)
