@@ -26,6 +26,11 @@ const char* mqtt_sensor_topic = "home/sensor/data";  // Topic để gửi dữ l
 const char* mqtt_control_topic = "home/device/control";  // Topic để nhận lệnh điều khiển
 const char* mqtt_status_topic = "home/device/status";  // Topic để gửi trạng thái thiết bị
 
+// Biến lưu trạng thái hiện tại của các thiết bị
+bool currentFanState = LOW;
+bool currentACState = LOW;
+bool currentLightState = LOW;
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -79,33 +84,40 @@ void callback(char* topic, byte* payload, unsigned int length) {
       return; // Thoát khỏi hàm sau khi tắt tất cả
   }
 
-  // Kiểm tra thiết bị và trạng thái để điều khiển LED tương ứng
-  if (String(device) == "fan") {
-    if (String(status) == "on") {
-      digitalWrite(FAN_PIN, HIGH);
-      client.publish(mqtt_status_topic, "{\"device\": \"fan\", \"status\": \"on\"}");
-    } else if (String(status) == "off") {
-      digitalWrite(FAN_PIN, LOW);
+
+// Kiểm tra thiết bị và trạng thái để điều khiển tương ứng
+if (String(device) == "fan") {
+    if (String(status) == "on" && currentFanState == LOW) {
+      digitalWrite(FAN_PIN, HIGH); // Bật quạt
+      currentFanState = HIGH;      // Cập nhật trạng thái
+      client.publish(mqtt_status_topic, "{\"device\": \"fan\", \"status\": \"on\"}"); // Chỉ gửi lệnh nếu có sự thay đổi
+    } else if (String(status) == "off" && currentFanState == HIGH) {
+      digitalWrite(FAN_PIN, LOW);  // Tắt quạt
+      currentFanState = LOW;       // Cập nhật trạng thái
       client.publish(mqtt_status_topic, "{\"device\": \"fan\", \"status\": \"off\"}");
     }
-  } else if (String(device) == "ac") {
-    if (String(status) == "on") {
-      digitalWrite(AC_PIN, HIGH);
+} else if (String(device) == "ac") {
+    if (String(status) == "on" && currentACState == LOW) {
+      digitalWrite(AC_PIN, HIGH);  // Bật máy lạnh
+      currentACState = HIGH;       // Cập nhật trạng thái
       client.publish(mqtt_status_topic, "{\"device\": \"ac\", \"status\": \"on\"}");
-    } else if (String(status) == "off") {
-      digitalWrite(AC_PIN, LOW);
+    } else if (String(status) == "off" && currentACState == HIGH) {
+      digitalWrite(AC_PIN, LOW);   // Tắt máy lạnh
+      currentACState = LOW;        // Cập nhật trạng thái
       client.publish(mqtt_status_topic, "{\"device\": \"ac\", \"status\": \"off\"}");
     }
-  } else if (String(device) == "light") {
-    if (String(status) == "on") {
-      digitalWrite(LIGHT_PIN, HIGH);
+} else if (String(device) == "light") {
+    if (String(status) == "on" && currentLightState == LOW) {
+      digitalWrite(LIGHT_PIN, HIGH); // Bật đèn
+      currentLightState = HIGH;      // Cập nhật trạng thái
       client.publish(mqtt_status_topic, "{\"device\": \"light\", \"status\": \"on\"}");
-    } else if (String(status) == "off") {
-      digitalWrite(LIGHT_PIN, LOW);
+    } else if (String(status) == "off" && currentLightState == HIGH) {
+      digitalWrite(LIGHT_PIN, LOW);  // Tắt đèn
+      currentLightState = LOW;       // Cập nhật trạng thái
       client.publish(mqtt_status_topic, "{\"device\": \"light\", \"status\": \"off\"}");
     }
-  }
 }
+
 
 void setup() {
   Serial.begin(9600);

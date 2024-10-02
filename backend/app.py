@@ -96,7 +96,7 @@ def chart_data():
     data = get_chart_data()
     return jsonify(data)
 
-#-----------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------
 
 
 @app.route('/api/device-status', methods=['GET'])
@@ -118,7 +118,7 @@ def get_device_status():
     return jsonify(status_map)
 
 
-#--------------------------notification---------------------------------------------
+# --------------------------notification---------------------------------------------
 
 @app.route('/api/notifications', methods=['GET'])
 def get_notifications():
@@ -154,7 +154,8 @@ def add_notification_route():
     else:
         return jsonify({'success': False, 'error': 'No message provided'}), 400
 
-#------------------------------------Thong Ke-------------------------------------------
+# ------------------------------------Thong Ke-------------------------------------------
+
 
 @app.route('/api/sensors/all', methods=['GET'])
 def get_all_sensors_data():
@@ -179,7 +180,7 @@ def get_all_sensors_data():
     return jsonify(data)
 
 
-#----------------------------------------Lich Su-----------------------------------------
+# ----------------------------------------Lich Su-----------------------------------------
 @app.route('/api/devices', methods=['GET'])
 def get_devices_data():
     conn = sqlite3.connect('G:/Coding/database/iot.db')
@@ -202,7 +203,7 @@ def get_devices_data():
     return jsonify(data)
 
 
-#------------------------------------device filter by day---------------------------------
+# ------------------------------------device filter by day---------------------------------
 @app.route('/api/devices-filter', methods=['GET'])
 def get_devices_data_filter():
     # Nhận tham số "filter" từ query string
@@ -268,7 +269,7 @@ def get_devices_data_filter():
     # Trả về dữ liệu dưới dạng JSON
     return jsonify(data)
 
-#-----------------------------filter sensor data------------------------------
+# -----------------------------filter sensor data------------------------------
 # Đảm bảo mã API trả về dữ liệu đúng định dạng
 
 
@@ -404,7 +405,8 @@ def on_message(client, userdata, message):
             conn.commit()
             conn.close()
 
-            print(f"Trạng thái thiết bị {device} đã được cập nhật thành {status}")
+            print(f"Trạng thái thiết bị {
+                  device} đã được cập nhật thành {status}")
 
     except Exception as e:
         print(f"Error while processing message: {e}")
